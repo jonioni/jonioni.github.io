@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The 21%</title>
+    <style>
+        #index {
+            max-width: 32rem;
+        }
+        #index h1 {
+            text-align: center;
+        }
+        #index h1:before {
+            content: none;
+        }
+        #catalog {
+            text-align: center;
+            font-size: small;
+        }
+
+        #catalog a {
+            white-space: nowrap;
+        }
+
+        #catalog a::before {
+            content: "[";
+        }
+
+        #catalog a::after {
+            content: "]";
+        }
+
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */    </style>
+</head>
+
+<body>
+    <div id="index">
+        <h1>The 21%</h1>
+
+        <div id="catalog">
+            <a href="/Algorithms">Algorithms</a>
+            <a href="/Deep Learning">Deep Learning</a>
+            <a href="/Machine Learning">Machine Learning</a>
+        </div>
+
+        <ul id="posts">
+            <li><a href="/Asymptotic Equipartition Property.html" title="Oct 03, 2018" > Asymptotic Equipartition Property </a></li>
+            <li><a href="/Basic Inequalities.html" title="Sep 24, 2018" > Basic Inequalities </a></li>
+            <li><a href="/Bayes Network.html" title="Oct 16, 2018" > Bayes Network </a></li>
+            <li><a href="/Channel.html" title="Oct 16, 2018" > Channel </a></li>
+            <li><a href="/Coding Scheme.html" title="Oct 17, 2018" > Coding Scheme </a></li>
+            <li><a href="/Convolution.html" title="Oct 08, 2018" > Convolution </a></li>
+            <li><a href="/Data Processing Inequality.html" title="Oct 21, 2018" > Data Processing Inequality </a></li>
+            <li><a href="/Entropy.html" title="Sep 24, 2018" > Entropy </a></li>
+            <li><a href="/Fano's Inequality.html" title="Oct 21, 2018" > Fano's Inequality </a></li>
+            <li><a href="/Fundamental Inequalities.html" title="Sep 23, 2018" > Fundamental Inequalities </a></li>
+            <li><a href="/Hidden Markov Model.html" title="Oct 26, 2018" > Hidden Markov Model </a></li>
+            <li><a href="/Ideal Source Coding.html" title="Sep 25, 2018" > Ideal Source Coding </a></li>
+            <li><a href="/Information Capacity.html" title="Oct 17, 2018" > Information Capacity </a></li>
+            <li><a href="/Markov Chain.html" title="Sep 23, 2018" > Markov Chain </a></li>
+            <li><a href="/Markov's Inequality.html" title="Dec 03, 2018" > Markov's Inequality </a></li>
+            <li><a href="/Probability Basics.html" title="Sep 23, 2018" > Probability Basics </a></li>
+            <li><a href="/Shannon Code.html" title="Oct 01, 2018" > Shannon Code </a></li>
+            <li><a href="/Source Coding.html" title="Oct 01, 2018" > Source Coding </a></li>
+            <li><a href="/Stationary Process.html" title="Sep 23, 2018" > Stationary Process </a></li>
+            <li><a href="/Stochastic Process.html" title="Sep 23, 2018" > Stochastic Process </a></li>
+            <li><a href="/Utility Theory.html" title="Nov 08, 2018" > Utility Theory </a></li>
+        </ul>
+    </div>
+</body>
+
+</html>

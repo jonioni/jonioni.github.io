@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Backpropagation</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Backpropagation</h1>
+<p>Use <strong>partial derivative chain rule</strong> to link the loss to the target parameter.</p>
+<h2>Essence</h2>
+<p>For any hidden layer neuron:</p>
+<p><img src="_images/bp/Neuron1.png" alt=""></p>
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}}{\partial W'}
+    &= \left( \frac{\partial \mathcal{L}}{\partial o'} \cdot \frac{\partial o'}{\partial \sigma} \cdot \frac{\partial \sigma}{\partial \Sigma'} \right) \cdot \frac{\partial \Sigma'}{\partial W'} \\
+    &= \left( \delta' \right) \cdot o
+\end{aligned}
+$$<p>For its previous neuron:</p>
+<p><img src="_images/bp/Neuron2.png" alt=""></p>
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}}{\partial W}
+    &= \left( \frac{\partial \mathcal{L}}{\partial o} \cdot \frac{\partial o}{\partial \sigma} \cdot \frac{\partial \sigma}{\partial \Sigma} \right) \cdot \frac{\partial \Sigma}{\partial W} \\
+    &= \left( \delta \right) \cdot x
+\end{aligned}
+$$<p>where
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}}{\partial o}
+    &= \sum \left( \frac{\partial \mathcal{L}}{\partial \Sigma'} \right) \cdot \frac{\partial \Sigma'}{\partial o} \\
+    &= \sum (\delta') \cdot W'
+\end{aligned}
+$$</p>
+<p>Note:</p>
+<ul>
+<li>We only need to store $\sigma, \frac{\partial \sigma}{\partial \Sigma}$ during forward phase.</li>
+<li>$\delta = \frac{\partial \mathcal{L}}{\partial \Sigma}$ is a temporary variable for computational convenience during backward phase.</li>
+<li>$\Sigma​$ all errors of the forward layer's neurons during backward phase.</li>
+</ul>
+<h2>From Scratch</h2>
+<pre><code class="lang-python">class NeuralNetwork(object):
+    &quot;&quot;&quot;Properties:
+        layers::int
+        W::[numpy.matrix], b::[numpy.vector]
+        Σ::[numpy.vector] -&gt; dfdΣ::[numpy.vector]
+        o::[numpy.vector]
+        δ::numpy.vector
+    &quot;&quot;&quot;
+    def __init__(self, sizes):
+        &quot;&quot;&quot;[numpy.matrix] -&gt; NerualNetwork&quot;&quot;&quot;
+        self.W = [numpy.matrix(numpy.random.randn(k_out, k_in)) for k_in, k_out in zip(sizes[:-1], sizes[1:])]
+        self.b = [numpy.random.randn(k) for k in sizes[1:]]
+        self.layers = len(sizes)
+        self.dfdΣ = deque(maxlen=self.layers-1)  # self.Σ
+        self.o = deque(maxlen=self.layers)
+
+    def forward(self, x, f, df):
+        &quot;&quot;&quot;numpy.vector, f, f -&gt; numpy.vector&quot;&quot;&quot;
+        self.o.append(x)
+        for W, b in zip(self.W, self.b):
+            Σ = W * self.o[-1] + b
+            self.o.append(f(Σ))
+            self.dfdΣ.append(df(Σ))  # self.Σ.append(Σ)
+        return self.o[-1]
+
+    def backward(self, y, dE):
+        &quot;&quot;&quot;numpy.vector, f, f -&gt; [numpy.matrix], [numpy.vector]&quot;&quot;&quot;
+        dEdW, dEdb = [], []
+        for i in -numpy.arange(1, self.layers):
+            if i == -1:
+                δ = dE(y, self.o[i]) * self.dfdΣ[i]
+            else:
+                δ = (δ * self.W[i]) * self.dfdΣ[i]
+            dEdW.append(numpy.matrix(δ).T * self.o[i - 1])
+            dEdb.append(δ)
+        return reversed(dEdW), reversed(dEdb)
+
+    def update(self, ɑ, dEdW, dEdb):
+        &quot;&quot;&quot;float, [numpy.matrix], [numpy.vector] -&gt; Side-Effect&quot;&quot;&quot;
+        for i in range(self.layers):
+            self.W[i] -= ɑ * dEdW[i]
+            self.b[i] -= ɑ * dEdb[i]
+</code></pre>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Sep 13, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hidden Markov Model</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Hidden Markov Model</h1>
+<h2>Essence</h2>
+<p>Model: States are hidden.
+$$
+\begin{aligned}
+\begin{matrix}
+\text{States}: & \boxed{x_1} & \boxed{x_2} & \cdots & \boxed{x_T} \\
+& \downarrow & \downarrow & \cdots & \downarrow \\
+\text{Observations}: & y_1 & y_2 & \cdots & y_T \\
+\end{matrix}
+\end{aligned}
+$$</p>
+<p>Goal: Determine the states of each moment given observations.
+$$
+\begin{aligned}
+\underline{x}^{*} 
+    &= \arg\max_{\underline{x}} P[\underline{y}] \\
+    &= \arg\max_{\underline{x}} \sum_{\underline{x}} P[\underline{y}|\underline{x}]P[\underline{x}]
+\end{aligned}
+$$</p>
+<h2>Definition</h2>
+$$
+\lambda = (A, B, \pi) \text{ or } (N, M, A, B, \pi)
+$$<ul>
+<li>$ A $ : State Transition Matrix. $ N $ : States, $\{S_1, \dots, S_N\}$.<ul>
+<li>$ a_{ij} = P[Q_{t+1} = S_j | Q_t = S_i]$.</li>
+</ul>
+</li>
+<li>$B $ : Symbol Distribution. $ M $ : Symbols per State, $\{V_1, \dots, V_M\}$.<ul>
+<li>$ b_{j}(k) = P[O_t = V_k|Q_t = S_j] $.</li>
+</ul>
+</li>
+<li>$ \pi $ :  Initial State Distribution.<ul>
+<li>$ \pi_i = P[Q_1 = S_i] $</li>
+</ul>
+</li>
+</ul>
+<h2>Goal</h2>
+<p>Given observations ($O_t$ is a symbol):
+$$
+O = \begin{matrix}
+O_1 & O_2 & \dots & O_T
+\end{matrix}
+$$
+We want:
+$$
+\arg\max_{\lambda} P[O | \lambda]
+$$</p>
+<p>Problems:</p>
+<ul>
+<li>Problem 1: A Hidden Model</li>
+<li>Problem 2: The Training Criteria (Reason for Forward-Backward Algorithm)</li>
+<li>Problem 3: Model Parameters</li>
+</ul>
+<h2>Problem 1: A Hidden Model</h2>
+<p>The Observation Sequence:
+$$
+\begin{aligned}
+O 
+    &= \begin{matrix} O_1 & O_2 &\cdots &O_T \end{matrix}
+\end{aligned}
+$$</p>
+<p>The State Sequence: (The Hidden Model)
+$$
+\begin{aligned}
+Q 
+    &= \begin{matrix} Q_1 & Q_2 &\cdots &Q_T \end{matrix}
+\end{aligned}
+$$</p>
+<h3>Solution 1</h3>
+<p>Since:
+$$
+\begin{aligned}
+&\begin{cases}
+P[Q|\lambda]
+    = \pi_{Q_1} \cdot a_{Q_1 Q_2} \cdot a_{Q_2 Q_3} \cdots a_{Q_{T-1} Q_T} \\
+P[O|Q, \lambda]
+    = \prod_{t=1}^{T} P[O_t | Q_t, \lambda]
+    = b_{Q_1}(O_1) \cdot b_{Q_2}(O_2) \cdots \cdot b_{Q_T}(O_T) \\
+\end{cases}
+\end{aligned}
+$$</p>
+<p>We have:
+$$
+\begin{aligned}
+P[O|\lambda]
+    &= \sum_{Q} P[O, Q|\lambda] \\
+    &= \sum_{Q} P[O|Q, \lambda] \cdot P[Q|\lambda] \\
+    &= \sum_{Q_1 \cdots Q_T} [b_{Q_1}(O_1) \cdot b_{Q_2}(O_2) \cdots \cdot b_{Q_T}(O_T) ] \cdot [a_{Q_1 Q_2} \cdot a_{Q_2 Q_3} \cdots a_{Q_{T-1} Q_T}] \\
+    &= \sum_{Q_1 \cdots Q_T} [\pi_{Q_1} \cdot b_{Q_1}(O_1)] \cdot [a_{Q_1 Q_2} \cdot  b_{Q_2}(O_2)] \cdots [a_{Q_{T-1} Q_T} \cdot b_{Q_T}(O_T)] \\
+P[O|\lambda]
+    &\sim (N^T \cdot 2T)
+\end{aligned}
+$$</p>
+<p>A simple $N = 5, T = 100$ would require $ 10^{72} $ computations. This solution is impractical.</p>
+<h3>Solution 2: Forward-Backward Procedure</h3>
+<h4>Forward Phase</h4>
+<ul>
+<li>Definition: (Forward Variable)</li>
+</ul>
+$$
+\begin{aligned}
+\alpha_{t}(i)
+    &= P[O_1 O_2 \cdots O_t, Q_t = S_i | \lambda]
+\end{aligned}
+$$<ul>
+<li><p>Procedure:</p>
+<ol>
+<li><p>Initialization:
+$$
+\begin{aligned}
+\alpha_1(i)
+ &= \pi_i \cdot b_{i}(O_1) \\
+\alpha_1(i)
+ &\sim [\times: 1] \\
+\alpha_1
+ &\sim [\times: N]
+\end{aligned}
+$$</p>
+</li>
+<li><p>Induction:
+$$
+\begin{aligned}
+\alpha_{t+1}(j)
+ &= \left[ \sum_{i=1}^{N} \alpha_{t}(i) \cdot a_{ij} \right] \cdot b_{j}(O_{t+1}) \\ 
+\alpha_{t+1}(j)
+ &\sim [\times: (N+1) ; +: (N-1)] \\
+\alpha_{t+1}
+ &\sim [\times:N (N+1) ; +: N (N-1)]
+\end{aligned}
+$$</p>
+</li>
+<li><p>Termination:
+$$
+\begin{aligned}
+P[O|\lambda]
+ &= \sum_{i=1}^{N} \alpha_{T}(i)
+\end{aligned}
+$$</p>
+</li>
+</ol>
+</li>
+<li><p>Complexity:
+$$
+\begin{aligned}
+\alpha_{[1, T]}
+&\sim 
+  [\times: (T-1) \cdot N \cdot (N + 1) + N; +: (T - 1) \cdot N \cdot (N - 1)]
+\end{aligned}
+$$
+  A simple $ N = 5, T = 100$ requires $3000$ computations, comparing to $10^{72}$ computations previously.</p>
+</li>
+<li><p>The insight comes from the lattice structure due to Markov property (depending only on previous states, like Bayes net).</p>
+</li>
+</ul>
+<h4>Backward Phase</h4>
+<ul>
+<li>Definition: (Backward Variable)</li>
+</ul>
+$$
+\begin{aligned}
+\beta_t(i)
+    &= P[O_{t+1} O_{t+2} \cdots O_T | Q_t = S_i, \lambda]
+\end{aligned}
+$$<ul>
+<li><p>Procedure:</p>
+<ol>
+<li><p>Initialization:
+$$
+\begin{aligned}
+\beta_{T}(i)
+ &= 1
+\end{aligned}
+$$</p>
+</li>
+<li><p>Induction:
+$$
+\begin{aligned}
+\beta_{t}(i)
+ &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot b_j(O_{t+1}) \cdot a_{ij} \\
+\beta_{t}(i)
+ &\sim [\times:2N; +: (N - 1)] \\
+\beta_{t}
+ &\sim [\times: 2N^2; +: N(N-1)]
+\end{aligned}
+$$</p>
+</li>
+</ol>
+</li>
+<li><p>Complexity:</p>
+</li>
+</ul>
+$$
+\begin{aligned}
+\beta_{[1, T]}
+\sim [\times: 2N^2T; + : TN(N - 1)]
+\end{aligned}
+$$<h2>Problem 2: The Training Criteria</h2>
+<p>Target: Given observation, find the mostly likely state at $ t $. (A New Goal)
+$$
+\begin{aligned}
+Q_t 
+    &= \arg\max_{i \in [1, N]} P[Q_t = S_i | O, \lambda] \\
+    &= \arg\max_{i \in [1, N]} \gamma_{t(i)}
+\end{aligned}
+$$
+Then:
+$$
+\begin{aligned}
+\gamma_{t}(i) 
+    &= P[Q_t = S_i | O, \lambda]
+        = \frac{P[Q_t = S_i, O | \lambda]}{P[O | \lambda]} \\
+    &= \frac{P[Q_t = S_i, O_1 \cdots O_t O_{t+1} \cdots O_T | \lambda]}{P[O | \lambda]} \\
+    &= \frac{P[O_{t+1} \cdots O_T | Q_t = S_i, O_1 \cdots O_t, \lambda] \cdot P[Q_t = S_i, O_1 \cdots O_t | \lambda]}{P[O | \lambda]} \\
+    &= \frac{P[O_{t+1} \cdots O_T | Q_t = S_i, \lambda] \cdot P[Q_t = S_i, O_1 \cdots O_t | \lambda]}{P[O | \lambda]} \\
+    &= \frac{\beta_t(i) \cdot \alpha_t(i)}{P[O | \lambda]}
+        = \frac{\alpha_t(i) \cdot \beta_t(i)}{\sum_{j=1}^{N} P[Q_t = S_j, O | \lambda]}
+        = \frac{\alpha_t(i) \cdot \beta_t(i)}{\sum_{j=1}^{N} \alpha_t(j) \cdot \beta_t(j)} \\
+\end{aligned}
+$$</p>
+<p>where:
+$$
+\begin{aligned}
+&P[O_1 \cdots O_{t+1}, Q_{t+1} = S_j | \lambda] \\
+    &= \sum_{i=1}^{N} P[O_1 \cdots O_t O_{t+1}, Q_t = S_i, Q_{t+1} = S_j | \lambda] \\
+    &= \sum_{i=1}^{N} P[O_{t+1}, Q_{t+1} = S_j | O_1 \cdots O_t, Q_t = S_i, \lambda] \cdot P[O_1 \cdots O_t, Q_t = S_i | \lambda] \\
+    &= \sum_{i=1}^{N} P[O_{t+1}, Q_{t+1} = S_j | Q_t = S_i, \lambda] \cdot P[O_1 \cdots O_t, Q_t = S_i | \lambda] \\
+    &= \sum_{i=1}^{N} P[O_{t+1} | Q_{t+1} = S_j, Q_t = S_i, \lambda] \cdot P[Q_{t+1} = S_j | Q_t = S_i, \lambda] \cdot \alpha_{t}(i) \\
+    &= \sum_{i=1}^{N} P[O_{t+1} | Q_{t+1} = S_j, \lambda] \cdot P[Q_{t+1} = S_j | Q_t = S_i, \lambda] \cdot \alpha_{t}(i) \\
+    &= \sum_{i=1}^{N} b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i) \\
+    &= b_{j}(O_{t+1}) \cdot \sum_{i=1}^{N} a_{ij} \cdot \alpha_{t}(i) \\
+    = \alpha_{t+1}(j)
+\end{aligned}
+$$
+and:
+$$
+\begin{aligned}
+&P[O_{t+1} \cdots O_T | Q_{t} = S_i] \\
+    &= \sum_{j=1}^{N} P[O_{t+1} O_{t+2} \cdots O_T, Q_{t+1} = S_j | Q_{t} = S_i] \\
+    &= \sum_{j=1}^{N} P[O_{t+2} \cdots O_T = S_j | O_{t+1}, Q_{t+1} = S_j, Q_{t} = S_i] \cdot P[O_{t+1}, Q_{t+1} = S_j | Q_{t} = S_i] \\
+    &= \sum_{j=1}^{N} P[O_{t+2} \cdots O_T = S_j | Q_{t+1} = S_j] \cdot P[O_{t+1} | Q_{t+1} = S_j, Q_{t} = S_i] \cdot P[Q_{t+1} = S_j | Q_{t} = S_i] \\
+    &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot P[O_{t+1} | Q_{t+1} = S_j] \cdot P[Q_{t+1} = S_j | Q_{t} = S_i] \\
+    &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \\
+    = \beta_{t}(i)
+\end{aligned}
+$$</p>
+<p>So the former probability is computed <strong>forwardly</strong>, the latter probability is computed <strong>backwardly</strong>.</p>
+<p>Note that $ \gamma_t(i) $ is also called the smoothed value. This process of using both $ \alpha_t(i) $ and $ \beta_t(i) $ is called <strong>smoothing</strong>.</p>
+<h2>Problem 3: Determine Model Parameters</h2>
+<p>There is no optimal way of estimating the model parameters. There is iterative procedure that reach local maximization(EM algorithm), or gradient techniques.</p>
+<p>Iterative Procedure:</p>
+<ul>
+<li><p>Define:</p>
+<p>$$
+  \begin{aligned}
+  \xi_{t}(i, j)</p>
+<pre><code>  &amp;= P[Q_{t+1} = S_j, Q_{t} = S_i | O, \lambda] \\
+  &amp;= \frac{P[Q_{t+1} = S_j, Q_{t} = S_i , O_1\cdots O_{T} | \lambda]}{P[O|\lambda]} \\
+  &amp;= \frac{P[O_{t+2}\cdots O_T | Q_{t+1} = S_j, \lambda] \cdot P[O_{t+1} | Q_{t+1} = S_j, \lambda ] \cdot P[Q_{t+1} = S_j| Q_{t} = S_i, \lambda] \cdot P[Q_t = S_i, O_1\cdots O_{t} | \lambda]}{P[O|\lambda]} \\
+  &amp;= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{P[O|\lambda]} \\
+  &amp;= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{\sum_{j=1}^{N} \sum_{i=1}^{N} \beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)} \\
+</code></pre>
+<p>\end{aligned}
+  $$</p>
+<p>Then:</p>
+<p>$$
+  \begin{aligned}
+  \gamma_t(i)</p>
+<pre><code>  &amp;= P[Q_t = S_i | O, \lambda] \\
+  &amp;= \sum_{j=1}^{N} P[Q_{t+1} = S_j, Q_t = S_i | O, \lambda] \\
+  &amp;= \sum_{j=1}^{N} \xi_{t}(i, j)
+</code></pre>
+<p>\end{aligned}
+  $$</p>
+</li>
+</ul>
+<ul>
+<li><p>Statistical Meaning:
+$$
+\begin{aligned}
+\sum_{t=1}^{T - 1} \gamma_{t}(i)
+  &= \mathbb{E}[\text{#Transitions from $S<em>i$}] \
+\sum</em>{t=1}^{T - 1} \xi_{t}(i, j)
+  &amp;= \mathbb{E}[\text{#Transitions from $S_i$ to $S_j$}] \
+\end{aligned}
+$$</p>
+</li>
+<li><p>Re-estimation Formulas:
+$$
+\begin{aligned}
+\overline{\pi_i} 
+  &= \gamma_{1}(i) \\
+\overline{a}_{ij}
+  &= \frac{\mathbb{E}[\text{#Transitions from $S_i$ to $S_j$}]}{\mathbb{E}[\text{#Transitions from $S<em>i$}]}
+  = \frac{\sum</em>{t=1}^{T - 1} \xi<em>{t}(i, j)}{\sum</em>{t=1}^{T - 1} \gamma_{t}(i)} \
+\overline{b}_j(k)
+  &amp;= \frac{\mathbb{E}[\text{#In $S_j$, observing $V_k$}]}{\mathbb{E}[\text{#In $S_j$}]}
+  = \frac{\sum<em>{t=1}^{T}1</em>{[O_t = V<em>k]} \cdot \gamma</em>{t}(j)}{\sum<em>{t=1}^{T} \gamma</em>{t}(j)}
+\end{aligned}
+$$</p>
+</li>
+<li><p>Procedure:</p>
+<ol>
+<li>Use initial $ \lambda $ to compute a $ \overline{\lambda} $.</li>
+<li>If $ P[O | \overline{\lambda}] > P[O | \lambda] $, then update it and repeat.</li>
+</ol>
+</li>
+<li><p>Stochastic Constraints:
+$$
+\begin{aligned}
+\sum_{i=1}^{N} \overline{\pi}_i &= 1 \\
+\sum_{j=1}^{N} \overline{a}_{ij} &= 1 \\ 
+\sum_{k=1}^{M} \overline{b}_j(k) &= 1
+\end{aligned}
+$$</p>
+</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="https://www.ece.ucsb.edu/Faculty/Rabiner/ece259/Reprints/tutorial%20on%20hmm%20and%20applications.pdf">Rabiner HMM Tutorial</a></li>
+<li><a href="https://www.cs.jhu.edu/~jason/papers/jurafsky+martin.slp3draft.ch9.pdf">Hidden Markov Models</a></li>
+</ul>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Oct 26, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

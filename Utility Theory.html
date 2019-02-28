@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Utility Theory</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Utility Theory</h1>
+<h2>How We Made Decision and Behave <a href="https://www.youtube.com/watch?v=c-4flnuxNV4&amp;list=PL18AFEE157176DF28">Dan Gilbert</a></h2>
+$$
+\begin{aligned}
+\mathbb{E}\left[ \text{Gain} \right] 
+    &= \sum_{gain} P[\text{gain}] \cdot U(\text{gain}) \\
+\text{Expected Gain}
+    &= \sum (\text{Odds of Gain}) \times (\text{Value of Gain})
+\end{aligned}
+$$<ul>
+<li>$P$: Odds of gain. Memory affects our evaluation.</li>
+<li>$U$: Value of gain. Comparison affects our evaluation.</li>
+</ul>
+<p>But people did two things:</p>
+<ul>
+<li>Making errors in estimating odds. We underestimate the odds of our future pains.</li>
+<li>Making errors in estimating values. We overestimate the value of our present pleasure.</li>
+</ul>
+<p>People usually think: "What space is to size, time is to value." -- Plato</p>
+<ul>
+<li>More is better.</li>
+<li>Now is better than later.</li>
+</ul>
+<h2>Utility Function / Value Function</h2>
+$$
+U : S \mapsto \mathbb{R}
+$$<ul>
+<li>$S$: Real World State, e.g. preference over something.</li>
+</ul>
+<p>It is often a</p>
+<h2>Optimal Behavior</h2>
+$$
+\max_{a \in A} \sum_{s \in S} P[s|a]U(s)
+$$<ul>
+<li>$A$: Possible Actions</li>
+<li>$S$: Possible States</li>
+</ul>
+<h2>Problem</h2>
+<p>Utility is not natural. Preferences is!</p>
+<p>Theorem: Given a plausible set of assumptions about your preferences, there must exist a consistent utility function.</p>
+<ul>
+<li>$A \succeq B$: Weakly prefers $A$ to $B$.</li>
+<li>$A \succ B$: Strictly prefers $A$ to $B$.</li>
+<li>$A \sim B$: Indifferent between $A$ and $B$.</li>
+</ul>
+<p>Reference: <a href="https://www.cs.ubc.ca/~kevinlb/teaching/cs532l%20-%202013-14/Lectures/Utility%20Theory.pdf">Utility Theory</a></p>
+<h2>Preference Axioms</h2>
+<ul>
+<li><p>Completeness: $\forall A, B: (A \succ B) \or (A \prec B) \or (A \sim B)$.</p>
+</li>
+<li><p>Transitivity: $(A \succ B) \and (B \succ C) \Rightarrow (A \succ C)$.</p>
+</li>
+<li><p>Monotonicity: $.A \succ B \and p \geq q \Rightarrow [p: A, (1 - p): B] \geq [q: A, (1 - q): B]$.</p>
+<p>"You should prefer a 90% chance of getting \$1000 to a 50% chance of getting \$10".</p>
+</li>
+<li><p>Substitutability: $A \sim B \Rightarrow [p: A, (1 - p), C] \sim [p: B, (1 - p): C]$.</p>
+<p>"If you prefer apple and banana equally, then a 30% getting of winning an apple looks the same to you as a 30% chance of getting a banana."</p>
+</li>
+<li><p>Decomposability: $[p: A, (1-p): [q: B, (1-q): C]] \sim [p: A, (1-p)q: B, (1-p)(1-q): C]$.</p>
+</li>
+<li><p>Continuity: $A \succ B \succ C \Rightarrow \exists p[p: A, (1-p): C] \sim B$.</p>
+</li>
+</ul>
+<p>Suppose a preference relation $\succeq$ satisfies the axioms. Then there exists a utility function $u$ that could represent $\succeq$.</p>
+<p>Relation:
+$$
+\begin{aligned}
+A \succeq B \Leftrightarrow U(A) \geq U(B) \\
+A \succ B \Leftrightarrow U(A) > U(B) \\
+A \sim B \Leftrightarrow U(A) = U(B)
+\end{aligned}
+$$
+Lottery:
+$$
+U([p_1: O_1, \dots , p_k:O_k]) = \sum_{i=1}^{k}p_iU(O_i)
+$$</p>
+<h2>Value of Information</h2>
+<p>Expected utility of action $a$ with evidence $E$:
+$$
+\mathbb{E}\left[ U_{E}(A|e) \right]
+    = \max_{a\in A} \sum_{i} P[S_i|e, a] \cdot U(S_i)
+$$
+Expected utility given new evidence $E'$:
+$$
+\mathbb{E}\left[ U_{E, E'}(A|e, e') \right]
+    = \max_{a\in A} \sum_{i} P[S_i|e, e', a] \cdot U(S_i)
+$$
+Value of knowing $E’​$(Value of Perfect Information, VPI):
+$$
+\begin{aligned}
+\text{VPI}_{E}(E')
+    &= \mathbb{E}\left[ U_{E,E'}(A'|e,E')\right]  - \mathbb{E}\left[ U_{E}(A|e) \right] \\
+    &= \left(\sum_{e'} P[e'|e] \cdot \mathbb{E}\left[ U_{E,E'}(A'|e,e')\right] \right) - \mathbb{E}\left[ U_{E}(A|e) \right] \\
+    &= \text{Expected Utility Given New Information} - \text{Previous Expected Utility}
+\end{aligned}
+$$
+Utility means: The best expected profit next. It’s irrelevant to action, only relevant to action space.</p>
+<p>Example (Time = Cost = -Utility):</p>
+<ul>
+<li><p>Cost of taking highway to work when there isn't traffic: 15</p>
+<p>Cost of taking highway to work when there is traffic: 30</p>
+<p>Cost of taking local roads to work: 20</p>
+<p>Odds of traffic: 0.15</p>
+</li>
+<li><p>Expected Utility:
+$$
+\mathbb{E}\left[ U(A) \right] = \max_{a \in A} \sum_{t} P[t] \cdot U(a|t) = 0.15\times 30 + 0.85 \times 15 = 17.25 < 20
+$$
+Expected Utility Given New Info:</p>
+</li>
+<li><p>$$
+\mathbb{E}\left[ U_T(A|T) \right] = \max_{a \in A} \sum_{t} P[t|T] \cdot U(a|t, T)
+$$</p>
+<ul>
+<li>When $T = 1$, local road is chosen. Expected utility is 20.</li>
+<li>When $T = 0$, highway is chosen. Expected utility is 15.</li>
+</ul>
+</li>
+<li><p>VPI = $\mathbb{E}\left[ U_T(A|T) \right] - \mathbb{E}\left[ U(A) \right] = 17.25 - 15.75 = 1.5$.</p>
+</li>
+</ul>
+<p>In practice, information is partial(what we observed cannot cover the exact state of the world) and imperfect(what we observed might not be reliable).</p>
+<p>VPI tells you how much you should pay for <strong>one</strong> exact piece of information. However this might be myopic. For example only knowing one part of the story may be useless when only knowing all is useful.</p>
+<h2>Conclusion</h2>
+<p>Decision theory provides a framework for optimal decision making.</p>
+<p>The principle is: maximizing expected utility.</p>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Nov 08, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

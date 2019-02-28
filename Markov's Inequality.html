@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Markov's Inequality</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h2>Markov’s Inq.</h2>
+$$
+P[X \geq t] \leq \frac{\mathbb{E}\left[ X\right]}{t}
+$$<p>Proof:
+$$
+\begin{aligned}
+\mathbb{E}\left[ X\right] 
+    &= \sum_{i=1}^{+\infty} i \cdot p_X(i)
+    = \sum_{i=1}^{n} i \cdot p_X(i) + \sum_{i=n}^{+\infty} i \cdot p_X(i)
+    \geq \sum_{i=n}^{+\infty} i \cdot p_X(i)
+    \geq n \sum_{i=n}^{+\infty} p_X(i)
+    = n P[X \geq n]
+\end{aligned}
+$$</p>
+<h2>Chebyshev’s Inq.</h2>
+$$
+P[|X - \mu| \geq t] \leq \frac{\sigma^2}{t^2}
+$$<p>Proof:
+$$
+\begin{aligned}
+P[X \geq n] 
+    &\leq \frac{\mathbb{E}\left[ X\right]}{n} \\
+P[X^2 \geq n^2] 
+    &\leq \frac{\mathbb{E}\left[ X^2\right]}{n^2} \\
+P[(X - \mu)^2 \geq n^2] 
+    = P[|X - \mu| \geq n] 
+    &\leq \frac{\mathbb{E}\left[ (X - \mu)^2 \right]}{n^2}
+    = \frac{\sigma^2}{n^2} \\
+\end{aligned}
+$$</p>
+<h2>Chernoff’s Inq.</h2>
+$$
+P[X \geq t] \leq \frac{\mathbb{E}\left[ e^{\lambda X} \right]}{e^{\lambda t}}
+$$<p>Proof:
+$$
+\begin{aligned}
+P[X \geq t] 
+    &\leq \frac{\mathbb{E}\left[ X\right]}{t} \\
+P[X \geq t] 
+    &= P[\lambda X \geq \lambda t] \\
+    &= P[e^{\lambda X} \geq e^{\lambda t}] \\
+    &\leq \frac{\mathbb{E}\left[ e^{\lambda X} \right]}{e^{\lambda t}} \\
+\end{aligned}
+$$</p>
+<h3>Chernoff’s Inq. for Sums</h3>
+$$
+P[\overline{X_n} \geq t] 
+    \leq \left( \frac{\mathbb{E}\left[ e^{\lambda X_1} \right]}{e^{\lambda t}} \right)^n
+$$<p>Proof:
+$$
+\begin{aligned}
+P[\overline{X_n} \geq t] 
+    &\leq \frac{\mathbb{E}\left[ e^{n\lambda \overline{X_n}}\right]}{e^{n\lambda t}} \\
+    &\leq \frac{\mathbb{E}\left[ e^{\lambda \sum_{i=1}^{n}X_i}\right]}{e^{n\lambda t}} \\
+    &= \frac{\prod_{i=1}^{n}\mathbb{E}\left[ e^{\lambda X_i}\right]}{e^{n\lambda t}} \\
+    &= \frac{\prod_{i=1}^{n}\mathbb{E}\left[ e^{\lambda X_1}\right]}{e^{n\lambda t}} \\
+    &= \left( \frac{\mathbb{E}\left[ e^{\lambda X_1} \right]}{e^{\lambda t}} \right)^n
+\end{aligned}
+$$</p>
+<h2>Reference</h2>
+<ul>
+<li><a href="http://www-cs-students.stanford.edu/~blynn/pr/markov.html">The Markov and Chebyshev</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Markov%27s_inequality#Proof_in_the_language_of_probability_theory">Markov's inequality</a></li>
+</ul>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Dec 03, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

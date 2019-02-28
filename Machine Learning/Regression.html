@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Regression</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Regression</h1>
+<p>Fitting data.</p>
+<h2>Formula</h2>
+$$
+\begin{aligned}
+\underline{w}
+    &= \arg\max_{\underline{w}} \mathcal{L}(\underline{w}) \\
+    &= \arg\max_{\underline{w}} \sum_{i=1}^{N} \ell(\underline{w}, \underline{x}^{(i)}; t^{(i)}) \\
+    &= \arg\max_{\underline{w}} \sum_{i=1}^{N} \left[ \Phi(\underline{x}^{(i)}) \cdot \underline{w} - t^{(i)} \right]^2
+\end{aligned}
+$$<p>One way to deal with functions that aren’t linearly separable is to <strong>augment your feature space</strong>(by $\Phi$) so that the target function is linearly separable in the augmented space.</p>
+<h2>Problem: Overfit</h2>
+<p>Too many features and overfit, because data is not enough.</p>
+<p>Solution: Cross Validation and Regularization.</p>
+<h3>Cross Validation</h3>
+<p>Try different feature size and determine where overfit starts. It requires a lot of data and is slow: if data is scarce, we would have fewer data than feature size after separation; if data is abundant, each round takes a lot of time. Also it is impractical when certain features are of interest.</p>
+<h3>Regularization</h3>
+<p>Penalize complicated answers. It trades training performance against solution complexity.
+$$
+\begin{aligned}
+\underline{w}
+    &= \arg\max_{\underline{w}} \left[ \lambda \Vert\underline{w}\Vert_2 + \mathcal{L}(\underline{w}) \right] \\
+    &= \arg\max_{\underline{w}} \left( \lambda \Vert\underline{w}\Vert_2 + \sum_{i=1}^{N} \left[ \Phi(\underline{x}^{(i)}) \cdot \underline{w} - t^{(i)} \right]^2 \right)
+\end{aligned}
+$$</p>
+<p>Natation:</p>
+<ul>
+<li><p>Norm Ball: $\Vert\underline{w}\Vert_{q = \{0.5, 1, 2, 3\}}$. Different $q$ values represents different ball-shape boundary of $\underline{w}$. The boundary represents limit of combinations of $\underline{w}$ components.</p>
+</li>
+<li><p>$L_2$ regularization: $q=2$. Favors many small weights. Have Bayesian counterpart.</p>
+</li>
+<li><p>$L_1$ Regularization: $q=1$. LASSO. Tends to pick sparse weights ($\underline{w}$ components). Often used in compressed sensing, where a sparse combination of basis functions that are consistent with observations are intended. Goal in this field are often formulated as an $L_1$ minimization problem. Have Bayesian counterpart.</p>
+</li>
+<li>$L_0$ Norm: Number of non-zero elements in a vector. Best for sparseness. $L_1$ norm can be seen as a reasonable approximation.</li>
+</ul>
+<p>Other ways to get sparseness: Forward Selection(starting with a small feature set and gradually add features until performance stops improving in cross validation) and Backward Elimination(starting with all features and gradually remove features). The issue is that both methods are greedy and can be slow.</p>
+<h2>Problem: Bias-Variance Tradeoff</h2>
+<p>Model with low bias usually have high variance. For instance, a squiggly line that fits train data well (low bias) might have a high variance (difference in fit between train set and test set). The idea model has low bias and low variance.</p>
+<p>Terms:</p>
+<ul>
+<li>Variance: The difference in fits between train set and test set.</li>
+<li>Bias: Fits for the train set.</li>
+</ul>
+<p>Situations:</p>
+<ul>
+<li>High bias, low variance algorithm trains model are consistent but inaccurate on average, e.g. regression, naïve Bayes, etc.</li>
+<li>High variance, low bias algorithm trains model are accurate on average but inconsistent, e.g. decision tree, nearest neighbors, etc.</li>
+</ul>
+<p>When data is sparse, variance can be a problem. Restricting hypothesis space can reduce variance at the cost of increasing bias.  When data are plentiful, variance is less of concern.</p>
+<h2>Bayesian View</h2>
+$$
+\begin{aligned}
+P[D | H] \cdot P[H] 
+    &= P[\underline{y} | f(X; \underline{w}) ] \cdot P[\underline{w}] \\
+    &= \prod_{i=1}^{N} \frac{e^{-\frac{[y^{(i)} - f(\underline{x}^{(i)})]^2}{2 \sigma^2}}}{\sqrt{2\pi \sigma^2}}  \cdot P[\underline{w}] \\
+    &= \prod_{i=1}^{N} \frac{e^{-\frac{[y^{(i)} - f(\underline{x}^{(i)})]^2}{2 \sigma^2}}}{\sqrt{2\pi \sigma^2}}  \cdot \frac{e^{-\frac{\alpha \underline{w}^T \cdot \underline{w}}{2}}}{\frac{2\pi^{\frac{(k+1)}{2}}}{\alpha}} \\
+\log P[D | H] \cdot P[H]
+    &\approx \sum_{i=1}^{N} [y^{(i)} - f(\underline{x}^{(i)})]^2 + \lambda \Vert \underline{w} \Vert_2
+\end{aligned}
+$$
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Oct 30, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

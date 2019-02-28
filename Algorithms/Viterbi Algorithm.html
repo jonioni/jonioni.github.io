@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Viterbi Algorithm</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Veterbi Algorithm</h1>
+<p>Given Observations:
+$$
+O = \{O_1, \dots, O_T \}
+$$
+Find best state sequence:
+$$
+Q = \{Q_1, \dots, Q_T \}
+$$</p>
+<h2>Method</h2>
+<ul>
+<li>Define: [The probability of ending up in $ i $ given previous observations.]</li>
+</ul>
+$$
+\begin{aligned}
+\delta_t(i)
+    &\triangleq \max_{Q_1 \cdots Q_{t-1}} P[Q_1 \cdots Q_{t-1}Q_t = S_i, O_1 \cdots O_t | \lambda]
+\end{aligned}
+$$<p>​   $ \delta_t(i) $ is the best best score along a single path at time $ t $ that ends in sate $ S_i $.</p>
+<p>​   By induction:
+$$
+\begin{aligned}
+\delta_{t+1}(j)
+    &= \max_{Q_1 \cdots Q_t} P[Q_1 \cdots Q_{t+1} = S_j, O_1 \cdots O_{t+1}| \lambda] \\
+    &= P[O_{t+1}|Q_{t+1} = S_j, \lambda] \cdot \max_{Q_1 \cdots Q_t} P[Q_{t+1} = S_j | Q_t = S_i, \lambda] \cdot P[Q_1 \cdots Q_{t} = S_i, O_1 \cdots O_{t}| \lambda] \\
+    &= [\max_{i} \delta_{t}(i) \cdot a_{ij}] \cdot b_{j}(O_{t+1})
+\end{aligned}
+$$</p>
+<ul>
+<li><p>Procedure: ($ \psi $ is for memorization, the best state to choose)</p>
+<ol>
+<li><p>Initialization:
+$$
+\begin{aligned}
+\delta_{1}(i) &= \pi_i \cdot b_{i}(O_1) \\
+\psi_1(i) &= 0
+\end{aligned}
+$$</p>
+</li>
+<li><p>Recursion:
+$$
+\begin{aligned}
+\delta_{t+1}(j)
+   &= \max_{i} [\delta_{t}(i) \cdot a_{ij}] \cdot b_j(O_{t+1}) \\
+\psi_{t+1}(j)
+   &= \arg\max_{i} [\delta_{t}(i) \cdot a_{ij}]
+\end{aligned}
+$$</p>
+</li>
+<li><p>Termination:
+$$
+\begin{aligned}
+Q_{T}^{*}
+   &= \arg\max_{i} [\delta_{T}(i)] \\
+P_{T}^{*}
+   &= \max_{i} [\delta_{T}(i)]
+\end{aligned}
+$$</p>
+</li>
+<li><p>Path Backtracking:
+$$
+Q_{t - 1}^{*} = \psi_{t}(Q_{t}^{*})
+$$</p>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>Algorithm in Math:</p>
+<ol>
+<li>$ \underline{\delta_0} $</li>
+<li>$\forall t \in [1, T]$:<ul>
+<li>$  \forall j \in [1, N] $:<ul>
+<li>$ \delta_{t}(j) = \max_{i} [\delta_{t-1}(i) \cdot a_{ij}] \cdot b_j(O_{t}) $</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Algorithm in Implementation:</p>
+<ol>
+<li>$ \underline{f_0} $</li>
+<li>$ \forall t \in [1, T] $<ul>
+<li>$ \forall j \in [1, N] $:<ul>
+<li>$ f_t(j) = 0 $</li>
+<li>$ \forall i \in [1, N] $:<ul>
+<li>$ f_{t}(j) = \max(f_{t-1}(i) \cdot a_{ij}, f_t(j)) $</li>
+</ul>
+</li>
+<li>$ f_t(j) = f_t(j) \cdot b_j(O_{t+1}) $</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Complexity: $ \Theta(N^2 \cdot T) $. See that forwarding every layer requires $ N^2 $ operations.</li>
+</ul>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Oct 29, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

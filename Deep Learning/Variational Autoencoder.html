@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Variational Autoencoder</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Variational Autoencoder</h1>
+<p>[TOC]</p>
+<h2>Neural Network Perspective</h2>
+<p>(This graph switches the $\theta$ and $ \phi$ comparing to the original VAE paper.)</p>
+<p><img src="https://jaan.io/images/encoder-decoder.png" alt=""></p>
+<p>The model:</p>
+<ul>
+<li>Generative Model $ p_{\theta}(z)p_{\theta}(x|z) $.</li>
+<li>Variational Approximation $ q_{\phi}(z|x) $ to the intractable posterior $ p_{\theta}(z|x) $.</li>
+</ul>
+<h2>Difference from Vanilla Autoencoder</h2>
+<blockquote><p>"The fundamental problem with autoencoders is that the latent space may not be continuous.</p>
+<p>Variational Autoencoders (VAEs) have one fundamentally unique property that separates them from vanilla autoencoders (and it is this property that makes them so useful for generative modeling): their latent spaces are by design continuous, allowing easy random sampling and interpolation."</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*CiVcrrPmpcB1YGMkTF7hzA.png" alt=""></p>
+<p>-- <a href="https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf">Intuitively Understanding Variational Autoencoders</a></p>
+<p><img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-18-at-12.24.19-AM.png" alt=""></p>
+<p>-- <a href="https://www.jeremyjordan.me/variational-autoencoders/">Variational autoencoders.</a></p>
+</blockquote>
+<h2>Problem (📄)</h2>
+<p>Scenario:</p>
+<p>Dataset $ X = \{ x^{(i)} \}_{i=1}^{N}$ is generated by some random process which involves an unobserved continuous random variable $ z $. The process of generation:</p>
+<ol>
+<li>A $ z^{(i)} $ is generated from some prior distribution $ p_{\theta^{*}}(z) $, which comes from a parametric family of distribution $ p_{\theta}(z) $.</li>
+<li>An $ x^{(i)} $ is generated from some conditional distribution $ p_{\theta^{*}}(x|z) $, which comes from a parametric family of distribution $ p_{\theta}(x|z) $.</li>
+</ol>
+<p>Our Interests:</p>
+<p>We want a general algorithm that works efficiently in case of:</p>
+<ol>
+<li>Intractability: The marginal likelihood $ p_{\theta}(x) = \int p_{\theta}(z)p_{\theta}(x|z) dz $ is intractable, so is the true posterior density $ p_{\theta}(z|x) = \frac{p_{\theta}(x|z)p_{\theta}(z)}{p_{\theta}(x)} $.</li>
+<li>A large dataset.</li>
+</ol>
+<p>So we propose a solution to three related problems in the above scenario:</p>
+<ol>
+<li>Efficient approximate MLE or MAP estimation for the parameter $ \theta $.</li>
+<li>Efficient approximate posterior inference of the latent variable $ z $ given an observed value $ x $ for a choice of $ \theta $.</li>
+<li>Efficient approximate marginal inference of the variable $ x $.</li>
+</ol>
+<p>Solution:</p>
+<p>We introduce a recognition model $ q_{\phi}(z|x) $: an approximation to the intractable true posterior $ p_\theta(z|x) $. We introduce a method for learning the recognition model parameters $ \phi $ jointly with the generative model parameters $ \theta $.</p>
+<ul>
+<li>We refer to the recognition model $ q_\phi(z|x) $ as a probabilistic <strong>encoder</strong>, since given a datapoint $ x $ it produces a distribution over the possible values of the code $ z $ from which the datapoint $ x $ could have been generated.</li>
+<li>In a similar vein we will refer to $ p_\theta(x|z) $ as a probabilistic <strong>decoder</strong>, since given a code $ z $ it produces a distribution over the possible corresponding values of $ x $.</li>
+</ul>
+<p>Trick:</p>
+<p>Convert probability distribution $ z \sim p_\phi(z|x) $ to a deterministic function $ \underline{z} = g_\phi(\underline{x}, \underline{\epsilon}) $ where $ \underline{\epsilon} $ is a noise random variable. For example, $ g_\phi(\underline{x}, \underline{\epsilon}) = \underline{\mu} + \underline{\sigma} \odot \underline{\epsilon} $.</p>
+<h2>Objective</h2>
+$$
+\begin{aligned}
+D_{KL}(q_\phi \Vert p_\theta) 
+    &= \mathbb{E}_{q_\phi} \left[\log \frac{1}{p_\theta} - \log \frac{1}{q_\phi} \right]
+    = \mathbb{E}_{q_\phi} \left[ \log q_\phi - \log p_\theta \right] \\
+\ell(\theta, \phi; x_i, z)
+    &= \mathbb{E}_{z \sim q_\phi(z|x_i)} \left[ \log \frac{1}{p_{\theta}(x_i|z)} \right] + D_{KL}(q_\phi(z|x_i) \Vert p(z)) \\
+    &= \ell_{\text{Reconstruction}} + \ell_{\text{Distribution}} \\
+\mathcal{L}(\theta, \phi; x, z)
+    &= \sum_{i=1}^{N} \ell_i
+\end{aligned}
+$$<p>For reconstruction loss.
+$$
+\begin{aligned}
+\mathbb{E}_{z \sim q_\phi(z|x_i)} \left[ \log \frac{1}{p_{\theta}(x_i|z)} \right]
+\end{aligned}
+$$
+If the $ z $ that encodes $ x<em>i $ and the decoder is good, then $ p</em>\theta(x_i|z) $ is large, which means the reconstruction loss is small. So this term encourages the decoder to reconstruct the data well.</p>
+<p>For distribution loss:
+$$
+D_{KL}(q_\phi(z|x_i) \Vert p(z))
+$$
+In the variational autoencoder, $ p(z) $ is specified as $ \mathcal{N}(0, 1) $. This term encourages the encoder the keep the representation of each digit sufficiently diverse.</p>
+<p>If we did not include this term, then the encoder could learn to cheat by giving each datapoint a representation in a different region of Euclidian space(e.g. $2_{a}$ and $2_b$ could have completely different representation $z_{a}$ and $z_b$) so as to mimic the data. This term keeps similar numbers’ representations close together. Hence we need our prior $ p(z) $.</p>
+<p><img src="https://www.jeremyjordan.me/content/images/2018/06/Screen-Shot-2018-06-20-at-2.51.06-PM.png" alt=""></p>
+<h2>Loss Function - ELBO View (📄)</h2>
+$$
+\begin{aligned}
+\log p(x)
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p(x)\right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log \frac{p(x|z)p(z)}{p(z|x)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log \frac{p(x|z)p(z)}{p(z|x)} \frac{q_\phi(z|x)}{q_\phi(z|x)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p(x|z) + \log \frac{p(z)}{q_\phi(z|x)} + \log\frac{q_\phi(z|x)}{p(z|x)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p(x|z) - \log \frac{q_\phi(z|x)}{p(z)} + \log\frac{q_\phi(z|x)}{p(z|x)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p(x|z) \right] - D_{KL}(q_\phi(z|x) \Vert p(z)) + D_{KL}(q_\phi(z|x) \Vert p(z|x)) \\
+    &= \left[ \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p(x|z) \right] - D_{KL}(q_\phi(z|x) \Vert p(z)) \right] + D_{KL}(q_\phi(z|x) \Vert p(z|x)) \\
+    &= \left[ \mathbb{E}_{z \sim q_\phi(z|x)}\left[\log p_\theta(x|z) \right] - D_{KL}(q_\phi(z|x) \Vert p(z)) \right] + D_{KL}(q_\phi(z|x) \Vert p(z|x)) \\
+\end{aligned}
+$$<p>Since $ p(z|x) $ is intractable, we have no idea how to approach the last term. However, we know it is $ \geq 0$. The first two terms constitutes a tractable lower bound for the data probability, called ELBO. Given $ x $, we want to maximize the lower bound.</p>
+<h2>Loss Function - Intuitive View (👍)</h2>
+<p>Our goal:
+$$
+\begin{aligned}
+q_{\phi}^{*}(z|x)
+    &= \arg \min_{\phi} D_{KL}(q_{\phi}(z|x) \Vert p(z|x))
+\end{aligned}
+$$</p>
+<p>But $ p(x|z) $ is intractable. Therefore:</p>
+$$
+\begin{aligned}
+D_{KL}(q_\phi(z|x) \Vert p(z|x)) 
+    &= \mathbb{E}_{z \sim q_\phi(z|x)} \left[\log \frac{q_\phi(z|x)}{p(z|x)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{\frac{p(x|z)p(z)}{p(x)}} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{p(z)} \frac{p(x)}{p(x|z)} \right] \\
+    &= \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{p(z)}  \right] + \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x) \right] - \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x|z) \right] \\
+    &= D_{KL}(q_\phi(z|x) \Vert p(z)) + \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x) \right] - \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x|z) \right] \\
+    &= \left[ D_{KL}(q_\phi(z|x) \Vert p(z)) - \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x|z) \right] \right] + \log p(x) \\
+\min_{\phi} D_{KL}(q_\phi(z|x) \Vert p(z|x)) 
+    &= \min_{\phi} \left[ D_{KL}(q_\phi(z|x) \Vert p(z)) - \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p(x|z) \right] \right] \\
+    &= \min_{\phi, \theta} \left[ D_{KL}(q_\phi(z|x) \Vert p(z)) - \mathbb{E}_{z \sim q_\phi(z|x)} \left[ \log p_{\theta}(x|z) \right] \right] \\
+\end{aligned}
+$$<h2>How to Train</h2>
+<p>Originally the loss cannot backpropagates through the sampling/stochastic part. The internal representation we learn are statistical properties for continuous variables! Reparameterization trick is used to consolidate a formula for the sampled latent vector with $\epsilon$, so that backpropagation can be used. The network is split up into a part where we can do backpropagation and a part that is stochastic yet we do not need to train.</p>
+<p><img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-18-at-4.36.34-PM.png" alt=""></p>
+<p><img src="https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-18-at-4.39.41-PM.png" alt=""></p>
+<h2>Algebra / Term</h2>
+<ul>
+<li>$ q_\phi(\underline{z} | \underline{x})$: The representation of a neural network. / Represents a distribution since it also serves as a pdf function. / The encoder.</li>
+<li>$ p_\theta(\underline{x} | \underline{z}) $: The representation of another neural network. / Represents a distribution since it is a pdf function. / The decoder.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li><a href="https://www.jeremyjordan.me/variational-autoencoders/">Variational autoencoders.</a></li>
+<li><a href="https://arxiv.org/pdf/1606.05908.pdf">Tutorial on Variational Autoencoders</a></li>
+<li><a href="https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf">Intuitively Understanding Variational Autoencoders</a></li>
+<li><a href="https://www.youtube.com/watch?v=5WoItGTWV54&amp;feature=youtu.be&amp;t=26m32s">CS231n - Lecture 13 | Generative Models</a></li>
+<li><a href="https://wiseodd.github.io/techblog/2016/12/10/variational-autoencoder/">Variational Autoencoder: Intuition and Implementation</a></li>
+</ul>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Oct 24, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

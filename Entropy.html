@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Entropy</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        @media (min-width: 48rem) {
+            img {
+                max-width: 60%;
+            }
+        }
+        h1 {
+            text-align: center;
+        }
+        div, img {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote p {
+            margin-left: 3rem;
+        }
+        blockquote:after {
+            content: no-close-quote;
+        }
+        h1:before,
+        h2:before,
+        h3:before,
+        h4:before,
+        h5:before {
+            color: lightgray;
+            font-style: italic;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>A Few Things About Entropy</h1>
+<h2>Entropy</h2>
+<p>The amount of uncertainty of an observable entity.</p>
+<h3>Formula</h3>
+<ul>
+<li><p>Single-Source, Single-Value: <strong>Random Variable</strong></p>
+<p>$$
+  \begin{aligned}
+  E(X) = \sum_{x \in \mathcal{X}} p_X(x) \cdot \log \frac{1}{p_X(x)}
+  \end{aligned}
+  $$</p>
+</li>
+<li><p>Multi-Source, Multi-Value: <strong>Random Vector</strong></p>
+<p>$$
+  \begin{aligned}
+  E(\underline{X}) &= \sum_{\underline{x} \in \mathcal{X}^n} p_{\underline{X}}(\underline{x}) \cdot \log \frac{1}{p_{\underline{X}}(\underline{x})}
+  \end{aligned}
+  $$
+  a.k.a. Joint Entropy, collective entropy of multiple entangled sources. A special case:
+  $$
+  \begin{aligned}
+  E(X, Y) &= \sum_{x, y \in \mathcal{X, Y}} p_{X, Y}(x, y) \cdot \log \frac{1}{p_{X, Y}(x, y)}
+  \end{aligned}
+  $$</p>
+</li>
+</ul>
+<h2>Conditional Entropy</h2>
+<p>The amount of uncertainty of an observable entity given some prior knowledge.</p>
+<h3>Formula</h3>
+<ul>
+<li><p>on/given event $\{ X = x\}​$:
+$$
+\begin{aligned}
+H(Y | X = x) &= \sum_{y \in \mathcal{Y}} p_{Y}(y | x) \cdot \log \frac{1}{p_{Y}(y | x)}
+\end{aligned}
+$$</p>
+</li>
+<li><p>on/given distribution $X$:
+$$
+\begin{aligned}
+H(Y | X) &= \sum_{x \in \mathcal{X}} H(Y | X = x)
+\end{aligned}
+$$</p>
+</li>
+</ul>
+<h2>Mutual Information</h2>
+<p>Mutual information is a fundamental quantity for measuring the relationship between random variables.</p>
+<h3>Formula</h3>
+$$
+\begin{aligned}
+I(X; Y)
+    &= \sum_{x, y \in \mathcal{X, Y}} p_{X, Y}(x, y) \left[ \log \frac{1}{p_{X}(x) \cdot p_{Y}(y)} - \log \frac{1}{p_{X, Y}(x, y)} \right]
+\end{aligned}
+$$<h3>Essence</h3>
+$$
+\begin{aligned}
+I(X; Y) 
+    &= H(X) - H(X | Y) \\
+    &= H(Y) - H(Y | X)
+\end{aligned}
+$$<p>Set Theory:</p>
+$$
+\begin{aligned}
+X \cap Y
+    &= X - (X \backslash Y) \\
+    &= Y - (Y \backslash X) \\
+\end{aligned}
+$$<p>(both "$-$" and "$\backslash$"  are the set-difference operator)</p>
+<h2>Chain Rule</h2>
+<h3>For Entropy</h3>
+$$
+\begin{aligned}
+H(X_1, \ldots X_n)
+    &= \sum_{i=1}^{n} H(X_i | X_{i - 1}, \ldots, X_{1})
+\end{aligned}
+$$<p>Set Theory:</p>
+$$
+\begin{aligned}
+X_1 \cup \cdots \cup X_n 
+    &= X_1 \\
+    &\cup X_2 \backslash X_1 \\
+    &\cup \cdots \\
+    &\cup X_n \backslash (X_1 \cup \cdots \cup X_{n - 1})
+\end{aligned}
+$$<h3>For Mutual Information</h3>
+$$
+\begin{aligned}
+I(X; Y_1, \ldots, Y_n)
+    &= \sum_{i=1}^{n} I(X; Y_i | Y_1, \ldots, Y_{i - 1})
+\end{aligned}
+$$<p>Set Theory:
+$$
+\begin{aligned}
+X \cup (Y_1 \cap \cdots \cap Y_n)
+    &= (X \cap Y_1) \\
+    &\cup (X \cap Y_2) \backslash Y_1 \\
+    &\cup \ \cdots \\
+    &\cup (X \cap Y_n) \backslash (Y_1 \cup \cdots \cup Y_{n - 1})
+\end{aligned}
+$$</p>
+<h2>Entropy Rate</h2>
+<p>How does the entropy of the sequence grow with $ n $ ?</p>
+<h3>Formula</h3>
+<p>For stochastic process $\{X_i\}$ :</p>
+<ul>
+<li>Entropy Rate:</li>
+</ul>
+$$
+\begin{aligned}
+H(\mathcal{X}) &= \lim_{n \to \infty} \frac{H(X_1, \ldots, X_n)}{n}
+\end{aligned}
+$$<ul>
+<li>Conditional Entropy Rate:
+$$
+\begin{aligned}
+H'(\mathcal{X})
+&= \lim_{n \to \infty} H(X_n | X_1, \ldots, X_{n-1})
+\end{aligned}
+$$</li>
+</ul>
+<p>If $\{X_i\}$ are i.i.d.:
+$$
+\begin{aligned}
+H(\mathcal{X})
+    = \lim_{n \to \infty} \frac{n \cdot H(X)}{n}
+    &= H(X) \\
+    &= \lim_{n \to \infty} H(X_n | X_1, \ldots, X_{n - 1})
+    = H'(\mathcal{X})
+\end{aligned}
+$$</p>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Sep 24, 2018</span> -->
+        <p>
+    </div>
+    <div id="disqus_thread">
+      <style type="text/css" scoped>
+        @media print {
+          #disqus_thread {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>
