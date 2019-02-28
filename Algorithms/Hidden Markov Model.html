@@ -188,7 +188,7 @@ h6:before {
     <div id="content">
         <h1>Hidden Markov Model</h1>
 <h2>Essence</h2>
-<p>Model: States are hidden.
+<p>Model: States are hidden.</p>
 $$
 \begin{aligned}
 \begin{matrix}
@@ -197,16 +197,14 @@ $$
 \text{Observations}: & y_1 & y_2 & \cdots & y_T \\
 \end{matrix}
 \end{aligned}
-$$</p>
-<p>Goal: Determine the states of each moment given observations.
+$$<p>Goal: Determine the states of each moment given observations.</p>
 $$
 \begin{aligned}
 \underline{x}^{*} 
     &= \arg\max_{\underline{x}} P[\underline{y}] \\
     &= \arg\max_{\underline{x}} \sum_{\underline{x}} P[\underline{y}|\underline{x}]P[\underline{x}]
 \end{aligned}
-$$</p>
-<h2>Definition</h2>
+$$<h2>Definition</h2>
 $$
 \lambda = (A, B, \pi) \text{ or } (N, M, A, B, \pi)
 $$<ul>
@@ -224,13 +222,12 @@ $$<ul>
 </li>
 </ul>
 <h2>Goal</h2>
-<p>Given observations ($O_t$ is a symbol):
+<p>Given observations ($O_t$ is a symbol):</p>
 $$
 O = \begin{matrix}
 O_1 & O_2 & \dots & O_T
 \end{matrix}
-$$
-We want:
+$$<p>We want:
 $$
 \arg\max_{\lambda} P[O | \lambda]
 $$</p>
@@ -241,14 +238,13 @@ $$</p>
 <li>Problem 3: Model Parameters</li>
 </ul>
 <h2>Problem 1: A Hidden Model</h2>
-<p>The Observation Sequence:
+<p>The Observation Sequence:</p>
 $$
 \begin{aligned}
 O 
     &= \begin{matrix} O_1 & O_2 &\cdots &O_T \end{matrix}
 \end{aligned}
-$$</p>
-<p>The State Sequence: (The Hidden Model)
+$$<p>The State Sequence: (The Hidden Model)
 $$
 \begin{aligned}
 Q 
@@ -256,7 +252,7 @@ Q
 \end{aligned}
 $$</p>
 <h3>Solution 1</h3>
-<p>Since:
+<p>Since:</p>
 $$
 \begin{aligned}
 &\begin{cases}
@@ -267,8 +263,7 @@ P[O|Q, \lambda]
     = b_{Q_1}(O_1) \cdot b_{Q_2}(O_2) \cdots \cdot b_{Q_T}(O_T) \\
 \end{cases}
 \end{aligned}
-$$</p>
-<p>We have:
+$$<p>We have:</p>
 $$
 \begin{aligned}
 P[O|\lambda]
@@ -279,120 +274,104 @@ P[O|\lambda]
 P[O|\lambda]
     &\sim (N^T \cdot 2T)
 \end{aligned}
-$$</p>
-<p>A simple $N = 5, T = 100$ would require $ 10^{72} $ computations. This solution is impractical.</p>
+$$<p>A simple $N = 5, T = 100$ would require $ 10^{72} $ computations. This solution is impractical.</p>
 <h3>Solution 2: Forward-Backward Procedure</h3>
 <h4>Forward Phase</h4>
-<ul>
-<li>Definition: (Forward Variable)</li>
-</ul>
+<p>Definition: (Forward Variable)</p>
 $$
 \begin{aligned}
 \alpha_{t}(i)
     &= P[O_1 O_2 \cdots O_t, Q_t = S_i | \lambda]
 \end{aligned}
-$$<ul>
-<li><p>Procedure:</p>
+$$<p>Procedure:</p>
 <ol>
-<li><p>Initialization:
-$$
-\begin{aligned}
-\alpha_1(i)
+<li><p>Initialization:</p>
+<p>$$
+ \begin{aligned}
+ \alpha_1(i)
  &= \pi_i \cdot b_{i}(O_1) \\
-\alpha_1(i)
+ \alpha_1(i)
  &\sim [\times: 1] \\
-\alpha_1
+ \alpha_1
  &\sim [\times: N]
-\end{aligned}
-$$</p>
+ \end{aligned}
+ $$</p>
 </li>
-<li><p>Induction:
-$$
-\begin{aligned}
-\alpha_{t+1}(j)
+<li><p>Induction:</p>
+<p>$$
+ \begin{aligned}
+ \alpha_{t+1}(j)
  &= \left[ \sum_{i=1}^{N} \alpha_{t}(i) \cdot a_{ij} \right] \cdot b_{j}(O_{t+1}) \\ 
-\alpha_{t+1}(j)
+ \alpha_{t+1}(j)
  &\sim [\times: (N+1) ; +: (N-1)] \\
-\alpha_{t+1}
+ \alpha_{t+1}
  &\sim [\times:N (N+1) ; +: N (N-1)]
-\end{aligned}
-$$</p>
+ \end{aligned}
+ $$</p>
 </li>
-<li><p>Termination:
-$$
-\begin{aligned}
-P[O|\lambda]
+<li><p>Termination:</p>
+<p>$$
+ \begin{aligned}
+ P[O|\lambda]
  &= \sum_{i=1}^{N} \alpha_{T}(i)
-\end{aligned}
-$$</p>
+ \end{aligned}
+ $$</p>
 </li>
 </ol>
-</li>
-<li><p>Complexity:
+<p>Complexity:</p>
 $$
 \begin{aligned}
 \alpha_{[1, T]}
 &\sim 
-  [\times: (T-1) \cdot N \cdot (N + 1) + N; +: (T - 1) \cdot N \cdot (N - 1)]
+    [\times: (T-1) \cdot N \cdot (N + 1) + N; +: (T - 1) \cdot N \cdot (N - 1)]
 \end{aligned}
-$$
-  A simple $ N = 5, T = 100$ requires $3000$ computations, comparing to $10^{72}$ computations previously.</p>
-</li>
-<li><p>The insight comes from the lattice structure due to Markov property (depending only on previous states, like Bayes net).</p>
-</li>
-</ul>
+$$<p>A simple $ N = 5, T = 100$ requires $3000$ computations, comparing to $10^{72}$ computations previously.</p>
+<p>The insight comes from the lattice structure due to Markov property (depending only on previous states, like Bayes net).</p>
 <h4>Backward Phase</h4>
-<ul>
-<li>Definition: (Backward Variable)</li>
-</ul>
+<p>Definition: (Backward Variable)</p>
 $$
 \begin{aligned}
 \beta_t(i)
     &= P[O_{t+1} O_{t+2} \cdots O_T | Q_t = S_i, \lambda]
 \end{aligned}
-$$<ul>
-<li><p>Procedure:</p>
+$$<p>Procedure:</p>
 <ol>
 <li><p>Initialization:
-$$
-\begin{aligned}
-\beta_{T}(i)
+ $$
+ \begin{aligned}
+ \beta_{T}(i)
  &= 1
-\end{aligned}
-$$</p>
+ \end{aligned}
+ $$</p>
 </li>
 <li><p>Induction:
-$$
-\begin{aligned}
-\beta_{t}(i)
+ $$
+ \begin{aligned}
+ \beta_{t}(i)
  &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot b_j(O_{t+1}) \cdot a_{ij} \\
-\beta_{t}(i)
+ \beta_{t}(i)
  &\sim [\times:2N; +: (N - 1)] \\
-\beta_{t}
+ \beta_{t}
  &\sim [\times: 2N^2; +: N(N-1)]
-\end{aligned}
-$$</p>
+ \end{aligned}
+ $$</p>
 </li>
 </ol>
-</li>
-<li><p>Complexity:</p>
-</li>
-</ul>
+<p>Complexity:</p>
 $$
 \begin{aligned}
 \beta_{[1, T]}
 \sim [\times: 2N^2T; + : TN(N - 1)]
 \end{aligned}
 $$<h2>Problem 2: The Training Criteria</h2>
-<p>Target: Given observation, find the mostly likely state at $ t $. (A New Goal)
+<p>Target: Given observation, find the mostly likely state at $ t $. (A New Goal)</p>
 $$
 \begin{aligned}
 Q_t 
     &= \arg\max_{i \in [1, N]} P[Q_t = S_i | O, \lambda] \\
     &= \arg\max_{i \in [1, N]} \gamma_{t(i)}
 \end{aligned}
-$$
-Then:
+$$<p>Then:</p>
 $$
 \begin{aligned}
 \gamma_{t}(i) 
@@ -405,8 +384,7 @@ $$
         = \frac{\alpha_t(i) \cdot \beta_t(i)}{\sum_{j=1}^{N} P[Q_t = S_j, O | \lambda]}
         = \frac{\alpha_t(i) \cdot \beta_t(i)}{\sum_{j=1}^{N} \alpha_t(j) \cdot \beta_t(j)} \\
 \end{aligned}
-$$</p>
-<p>where:
+$$<p>where:</p>
 $$
 \begin{aligned}
 &P[O_1 \cdots O_{t+1}, Q_{t+1} = S_j | \lambda] \\
@@ -417,10 +395,9 @@ $$
     &= \sum_{i=1}^{N} P[O_{t+1} | Q_{t+1} = S_j, \lambda] \cdot P[Q_{t+1} = S_j | Q_t = S_i, \lambda] \cdot \alpha_{t}(i) \\
     &= \sum_{i=1}^{N} b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i) \\
     &= b_{j}(O_{t+1}) \cdot \sum_{i=1}^{N} a_{ij} \cdot \alpha_{t}(i) \\
-    = \alpha_{t+1}(j)
+    &= \alpha_{t+1}(j)
 \end{aligned}
-$$
-and:
+$$<p>and:</p>
 $$
 \begin{aligned}
 &P[O_{t+1} \cdots O_T | Q_{t} = S_i] \\
@@ -429,81 +406,64 @@ $$
     &= \sum_{j=1}^{N} P[O_{t+2} \cdots O_T = S_j | Q_{t+1} = S_j] \cdot P[O_{t+1} | Q_{t+1} = S_j, Q_{t} = S_i] \cdot P[Q_{t+1} = S_j | Q_{t} = S_i] \\
     &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot P[O_{t+1} | Q_{t+1} = S_j] \cdot P[Q_{t+1} = S_j | Q_{t} = S_i] \\
     &= \sum_{j=1}^{N} \beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \\
-    = \beta_{t}(i)
+    &= \beta_{t}(i)
 \end{aligned}
-$$</p>
-<p>So the former probability is computed <strong>forwardly</strong>, the latter probability is computed <strong>backwardly</strong>.</p>
+$$<p>So the former probability is computed <strong>forwardly</strong>, the latter probability is computed <strong>backwardly</strong>.</p>
 <p>Note that $ \gamma_t(i) $ is also called the smoothed value. This process of using both $ \alpha_t(i) $ and $ \beta_t(i) $ is called <strong>smoothing</strong>.</p>
 <h2>Problem 3: Determine Model Parameters</h2>
 <p>There is no optimal way of estimating the model parameters. There is iterative procedure that reach local maximization(EM algorithm), or gradient techniques.</p>
 <p>Iterative Procedure:</p>
-<ul>
-<li><p>Define:</p>
-<p>$$
-  \begin{aligned}
-  \xi_{t}(i, j)</p>
-<pre><code>  &amp;= P[Q_{t+1} = S_j, Q_{t} = S_i | O, \lambda] \\
-  &amp;= \frac{P[Q_{t+1} = S_j, Q_{t} = S_i , O_1\cdots O_{T} | \lambda]}{P[O|\lambda]} \\
-  &amp;= \frac{P[O_{t+2}\cdots O_T | Q_{t+1} = S_j, \lambda] \cdot P[O_{t+1} | Q_{t+1} = S_j, \lambda ] \cdot P[Q_{t+1} = S_j| Q_{t} = S_i, \lambda] \cdot P[Q_t = S_i, O_1\cdots O_{t} | \lambda]}{P[O|\lambda]} \\
-  &amp;= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{P[O|\lambda]} \\
-  &amp;= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{\sum_{j=1}^{N} \sum_{i=1}^{N} \beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)} \\
-</code></pre>
-<p>\end{aligned}
-  $$</p>
-<p>Then:</p>
-<p>$$
-  \begin{aligned}
-  \gamma_t(i)</p>
-<pre><code>  &amp;= P[Q_t = S_i | O, \lambda] \\
-  &amp;= \sum_{j=1}^{N} P[Q_{t+1} = S_j, Q_t = S_i | O, \lambda] \\
-  &amp;= \sum_{j=1}^{N} \xi_{t}(i, j)
-</code></pre>
-<p>\end{aligned}
-  $$</p>
-</li>
-</ul>
-<ul>
-<li><p>Statistical Meaning:
+<p>Define:</p>
+$$
+\begin{aligned}
+\xi_{t}(i, j)
+&= P[Q_{t+1} = S_j, Q_{t} = S_i | O, \lambda] \\
+&= \frac{P[Q_{t+1} = S_j, Q_{t} = S_i , O_1\cdots O_{T} | \lambda]}{P[O|\lambda]} \\
+&= \frac{P[O_{t+2}\cdots O_T | Q_{t+1} = S_j, \lambda] \cdot P[O_{t+1} | Q_{t+1} = S_j, \lambda ] \cdot P[Q_{t+1} = S_j| Q_{t} = S_i, \lambda] \cdot P[Q_t = S_i, O_1\cdots O_{t} | \lambda]}{P[O|\lambda]} \\
+&= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{P[O|\lambda]} \\
+&= \frac{\beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)}{\sum_{j=1}^{N} \sum_{i=1}^{N} \beta_{t+1}(j) \cdot b_{j}(O_{t+1}) \cdot a_{ij} \cdot \alpha_{t}(i)} \\
+\end{aligned}
+$$<p>Then:</p>
+$$
+\begin{aligned}
+\gamma_t(i)
+&= P[Q_t = S_i | O, \lambda] \\
+&= \sum_{j=1}^{N} P[Q_{t+1} = S_j, Q_t = S_i | O, \lambda] \\
+&= \sum_{j=1}^{N} \xi_{t}(i, j)
+\end{aligned}
+$$<p>Statistical Meaning:</p>
 $$
 \begin{aligned}
 \sum_{t=1}^{T - 1} \gamma_{t}(i)
-  &= \mathbb{E}[\text{#Transitions from $S<em>i$}] \
-\sum</em>{t=1}^{T - 1} \xi_{t}(i, j)
-  &amp;= \mathbb{E}[\text{#Transitions from $S_i$ to $S_j$}] \
+&= \mathbb{E}[\text{\#Transitions from $S_i$}] \\
+\sum_{t=1}^{T - 1} \xi_{t}(i, j)
+&= \mathbb{E}[\text{\#Transitions from $S_i$ to $S_j$}] \\
 \end{aligned}
-$$</p>
-</li>
-<li><p>Re-estimation Formulas:
+$$<p>Re-estimation Formulas:</p>
 $$
 \begin{aligned}
 \overline{\pi_i} 
-  &= \gamma_{1}(i) \\
+&= \gamma_{1}(i) \\
 \overline{a}_{ij}
-  &= \frac{\mathbb{E}[\text{#Transitions from $S_i$ to $S_j$}]}{\mathbb{E}[\text{#Transitions from $S<em>i$}]}
-  = \frac{\sum</em>{t=1}^{T - 1} \xi<em>{t}(i, j)}{\sum</em>{t=1}^{T - 1} \gamma_{t}(i)} \
+&= \frac{\mathbb{E}[\text{\#Transitions from $S_i$ to $S_j$}]}{\mathbb{E}[\text{\#Transitions from $S_i$}]}
+= \frac{\sum_{t=1}^{T - 1} \xi_{t}(i, j)}{\sum_{t=1}^{T - 1} \gamma_{t}(i)} \\
 \overline{b}_j(k)
-  &amp;= \frac{\mathbb{E}[\text{#In $S_j$, observing $V_k$}]}{\mathbb{E}[\text{#In $S_j$}]}
-  = \frac{\sum<em>{t=1}^{T}1</em>{[O_t = V<em>k]} \cdot \gamma</em>{t}(j)}{\sum<em>{t=1}^{T} \gamma</em>{t}(j)}
+&= \frac{\mathbb{E}[\text{\#In $S_j$, observing $V_k$}]}{\mathbb{E}[\text{\#In $S_j$}]}
+= \frac{\sum_{t=1}^{T}1_{[O_t = V_k]} \cdot \gamma_{t}(j)}{\sum_{t=1}^{T} \gamma_{t}(j)}
 \end{aligned}
-$$</p>
-</li>
-<li><p>Procedure:</p>
+$$<p>Procedure:</p>
 <ol>
 <li>Use initial $ \lambda $ to compute a $ \overline{\lambda} $.</li>
 <li>If $ P[O | \overline{\lambda}] > P[O | \lambda] $, then update it and repeat.</li>
 </ol>
-</li>
-<li><p>Stochastic Constraints:
+<p>Stochastic Constraints:</p>
 $$
 \begin{aligned}
 \sum_{i=1}^{N} \overline{\pi}_i &= 1 \\
 \sum_{j=1}^{N} \overline{a}_{ij} &= 1 \\ 
 \sum_{k=1}^{M} \overline{b}_j(k) &= 1
 \end{aligned}
-$$</p>
-</li>
-</ul>
-<h2>Reference</h2>
+$$<h2>Reference</h2>
 <ul>
 <li><a href="https://www.ece.ucsb.edu/Faculty/Rabiner/ece259/Reprints/tutorial%20on%20hmm%20and%20applications.pdf">Rabiner HMM Tutorial</a></li>
 <li><a href="https://www.cs.jhu.edu/~jason/papers/jurafsky+martin.slp3draft.ch9.pdf">Hidden Markov Models</a></li>
