@@ -6,25 +6,26 @@
     <title>Algorithms</title>
     <style>
         #index {
-            max-width: 32rem;
+            font-family: fantasy;
+        }
+        #index > * {
+            margin: 1rem auto;
+            width: fit-content;
         }
         #catalog {
             text-align: center;
             font-size: small;
         }
-
         #catalog a {
-            white-space: nowrap;
+            display: inline-block;
         }
-
-        #catalog a::before {
-            content: "[";
+        #catalog a:before,
+        #catalog a:after {
+            content: "/";
         }
-
-        #catalog a::after {
-            content: "]";
+        #posts a {
+            display: block;
         }
-
         body {
             font-family: monospace;
             font-size: 14pt;
@@ -36,11 +37,15 @@
         }
         h1 {
             text-align: center;
+            font-family: fantasy;
         }
         div, img {
             display: block;
-            width: 100%;
+            max-width: 100%;
             margin: auto;
+        }
+        div {
+            width: 100%;
         }
         a {
             color: black;
@@ -78,24 +83,22 @@
         }
         blockquote p {
             margin-left: 3rem;
+            font-style: italic;
         }
         blockquote:after {
             content: no-close-quote;
         }
-        h1:before,
-        h2:before,
-        h3:before,
-        h4:before,
-        h5:before {
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            font-style: italic;
+            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
         /* h2:before { content: '## '; } */
         /* h3:before { content: '### '; } */
         /* h4:before { content: '#### '; } */
-        /* h5:before { content: '##### '; } */    </style>
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */    </style>
 </head>
 
 <body>
@@ -105,16 +108,16 @@
         <div id="catalog">
         </div>
 
-        <ul id="posts">
-            <li><a href="/Algorithms/Greedy Algorithm.html" title="Oct 15, 2018" > Greedy Algorithm </a></li>
-            <li><a href="/Algorithms/Hidden Markov Model.html" title="Oct 26, 2018" > Hidden Markov Model </a></li>
-            <li><a href="/Algorithms/Insersion Sort.html" title="Nov 10, 2018" > Insersion Sort </a></li>
-            <li><a href="/Algorithms/Monotonicity.html" title="Oct 15, 2018" > Monotonicity </a></li>
-            <li><a href="/Algorithms/P and NP.html" title="Oct 12, 2018" > P and NP </a></li>
-            <li><a href="/Algorithms/Submodularity.html" title="Oct 15, 2018" > Submodularity </a></li>
-            <li><a href="/Algorithms/The Halting Problem.html" title="Oct 15, 2018" > The Halting Problem </a></li>
-            <li><a href="/Algorithms/Viterbi Algorithm.html" title="Oct 29, 2018" > Viterbi Algorithm </a></li>
-        </ul>
+        <div id="posts">
+            <a href="/Algorithms/Greedy Algorithm.html" title="Oct 15, 2018" > Greedy Algorithm </a>
+            <a href="/Algorithms/Hidden Markov Model.html" title="Oct 26, 2018" > Hidden Markov Model </a>
+            <a href="/Algorithms/Insersion Sort.html" title="Nov 10, 2018" > Insersion Sort </a>
+            <a href="/Algorithms/Monotonicity.html" title="Oct 15, 2018" > Monotonicity </a>
+            <a href="/Algorithms/P and NP.html" title="Oct 12, 2018" > P and NP </a>
+            <a href="/Algorithms/Submodularity.html" title="Oct 15, 2018" > Submodularity </a>
+            <a href="/Algorithms/The Halting Problem.html" title="Oct 15, 2018" > The Halting Problem </a>
+            <a href="/Algorithms/Viterbi Algorithm.html" title="Oct 29, 2018" > Viterbi Algorithm </a>
+        </div>
     </div>
 </body>
 

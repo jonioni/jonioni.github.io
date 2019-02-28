@@ -6,25 +6,26 @@
     <title>Machine Learning</title>
     <style>
         #index {
-            max-width: 32rem;
+            font-family: fantasy;
+        }
+        #index > * {
+            margin: 1rem auto;
+            width: fit-content;
         }
         #catalog {
             text-align: center;
             font-size: small;
         }
-
         #catalog a {
-            white-space: nowrap;
+            display: inline-block;
         }
-
-        #catalog a::before {
-            content: "[";
+        #catalog a:before,
+        #catalog a:after {
+            content: "/";
         }
-
-        #catalog a::after {
-            content: "]";
+        #posts a {
+            display: block;
         }
-
         body {
             font-family: monospace;
             font-size: 14pt;
@@ -36,11 +37,15 @@
         }
         h1 {
             text-align: center;
+            font-family: fantasy;
         }
         div, img {
             display: block;
-            width: 100%;
+            max-width: 100%;
             margin: auto;
+        }
+        div {
+            width: 100%;
         }
         a {
             color: black;
@@ -78,24 +83,22 @@
         }
         blockquote p {
             margin-left: 3rem;
+            font-style: italic;
         }
         blockquote:after {
             content: no-close-quote;
         }
-        h1:before,
-        h2:before,
-        h3:before,
-        h4:before,
-        h5:before {
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            font-style: italic;
+            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
         /* h2:before { content: '## '; } */
         /* h3:before { content: '### '; } */
         /* h4:before { content: '#### '; } */
-        /* h5:before { content: '##### '; } */    </style>
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */    </style>
 </head>
 
 <body>
@@ -105,21 +108,21 @@
         <div id="catalog">
         </div>
 
-        <ul id="posts">
-            <li><a href="/Machine Learning/Backpropagation.html" title="Sep 13, 2018" > Backpropagation </a></li>
-            <li><a href="/Machine Learning/Bayesian Fundamentals.html" title="Oct 15, 2018" > Bayesian Fundamentals </a></li>
-            <li><a href="/Machine Learning/Bias-Variance.html" title="Dec 04, 2018" > Bias-Variance </a></li>
-            <li><a href="/Machine Learning/C4.5 Information Gain.html" title="Dec 02, 2018" > C4.5 Information Gain </a></li>
-            <li><a href="/Machine Learning/Empirical Risk Minimization.html" title="Sep 25, 2018" > Empirical Risk Minimization </a></li>
-            <li><a href="/Machine Learning/Gradients.html" title="Oct 24, 2018" > Gradients </a></li>
-            <li><a href="/Machine Learning/Logistic Regression.html" title="Sep 10, 2018" > Logistic Regression </a></li>
-            <li><a href="/Machine Learning/Loss Functions.html" title="Sep 10, 2018" > Loss Functions </a></li>
-            <li><a href="/Machine Learning/Naïve Bayes Classification.html" title="Nov 01, 2018" > Naïve Bayes Classification </a></li>
-            <li><a href="/Machine Learning/Perceptron.html" title="Oct 30, 2018" > Perceptron </a></li>
-            <li><a href="/Machine Learning/Regression.html" title="Oct 30, 2018" > Regression </a></li>
-            <li><a href="/Machine Learning/Softmax Regression.html" title="Sep 21, 2018" > Softmax Regression </a></li>
-            <li><a href="/Machine Learning/Stochastic Gradient Descent.html" title="Oct 24, 2018" > Stochastic Gradient Descent </a></li>
-        </ul>
+        <div id="posts">
+            <a href="/Machine Learning/Backpropagation.html" title="Sep 13, 2018" > Backpropagation </a>
+            <a href="/Machine Learning/Bayesian Fundamentals.html" title="Oct 15, 2018" > Bayesian Fundamentals </a>
+            <a href="/Machine Learning/Bias-Variance.html" title="Dec 04, 2018" > Bias-Variance </a>
+            <a href="/Machine Learning/C4.5 Information Gain.html" title="Dec 02, 2018" > C4.5 Information Gain </a>
+            <a href="/Machine Learning/Empirical Risk Minimization.html" title="Sep 25, 2018" > Empirical Risk Minimization </a>
+            <a href="/Machine Learning/Gradients.html" title="Oct 24, 2018" > Gradients </a>
+            <a href="/Machine Learning/Logistic Regression.html" title="Sep 10, 2018" > Logistic Regression </a>
+            <a href="/Machine Learning/Loss Functions.html" title="Sep 10, 2018" > Loss Functions </a>
+            <a href="/Machine Learning/Naïve Bayes Classification.html" title="Nov 01, 2018" > Naïve Bayes Classification </a>
+            <a href="/Machine Learning/Perceptron.html" title="Oct 30, 2018" > Perceptron </a>
+            <a href="/Machine Learning/Regression.html" title="Oct 30, 2018" > Regression </a>
+            <a href="/Machine Learning/Softmax Regression.html" title="Sep 21, 2018" > Softmax Regression </a>
+            <a href="/Machine Learning/Stochastic Gradient Descent.html" title="Oct 24, 2018" > Stochastic Gradient Descent </a>
+        </div>
     </div>
 </body>
 

@@ -6,25 +6,26 @@
     <title>bp</title>
     <style>
         #index {
-            max-width: 32rem;
+            font-family: fantasy;
+        }
+        #index > * {
+            margin: 1rem auto;
+            width: fit-content;
         }
         #catalog {
             text-align: center;
             font-size: small;
         }
-
         #catalog a {
-            white-space: nowrap;
+            display: inline-block;
         }
-
-        #catalog a::before {
-            content: "[";
+        #catalog a:before,
+        #catalog a:after {
+            content: "/";
         }
-
-        #catalog a::after {
-            content: "]";
+        #posts a {
+            display: block;
         }
-
         body {
             font-family: monospace;
             font-size: 14pt;
@@ -36,11 +37,15 @@
         }
         h1 {
             text-align: center;
+            font-family: fantasy;
         }
         div, img {
             display: block;
-            width: 100%;
+            max-width: 100%;
             margin: auto;
+        }
+        div {
+            width: 100%;
         }
         a {
             color: black;
@@ -78,24 +83,22 @@
         }
         blockquote p {
             margin-left: 3rem;
+            font-style: italic;
         }
         blockquote:after {
             content: no-close-quote;
         }
-        h1:before,
-        h2:before,
-        h3:before,
-        h4:before,
-        h5:before {
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            font-style: italic;
+            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
         /* h2:before { content: '## '; } */
         /* h3:before { content: '### '; } */
         /* h4:before { content: '#### '; } */
-        /* h5:before { content: '##### '; } */    </style>
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */    </style>
 </head>
 
 <body>
@@ -105,8 +108,8 @@
         <div id="catalog">
         </div>
 
-        <ul id="posts">
-        </ul>
+        <div id="posts">
+        </div>
     </div>
 </body>
 

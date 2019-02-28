@@ -6,25 +6,26 @@
     <title>Deep Learning</title>
     <style>
         #index {
-            max-width: 32rem;
+            font-family: fantasy;
+        }
+        #index > * {
+            margin: 1rem auto;
+            width: fit-content;
         }
         #catalog {
             text-align: center;
             font-size: small;
         }
-
         #catalog a {
-            white-space: nowrap;
+            display: inline-block;
         }
-
-        #catalog a::before {
-            content: "[";
+        #catalog a:before,
+        #catalog a:after {
+            content: "/";
         }
-
-        #catalog a::after {
-            content: "]";
+        #posts a {
+            display: block;
         }
-
         body {
             font-family: monospace;
             font-size: 14pt;
@@ -36,11 +37,15 @@
         }
         h1 {
             text-align: center;
+            font-family: fantasy;
         }
         div, img {
             display: block;
-            width: 100%;
+            max-width: 100%;
             margin: auto;
+        }
+        div {
+            width: 100%;
         }
         a {
             color: black;
@@ -78,24 +83,22 @@
         }
         blockquote p {
             margin-left: 3rem;
+            font-style: italic;
         }
         blockquote:after {
             content: no-close-quote;
         }
-        h1:before,
-        h2:before,
-        h3:before,
-        h4:before,
-        h5:before {
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            font-style: italic;
+            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
         /* h2:before { content: '## '; } */
         /* h3:before { content: '### '; } */
         /* h4:before { content: '#### '; } */
-        /* h5:before { content: '##### '; } */    </style>
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */    </style>
 </head>
 
 <body>
@@ -105,18 +108,18 @@
         <div id="catalog">
         </div>
 
-        <ul id="posts">
-            <li><a href="/Deep Learning/Autoencoder.html" title="Oct 23, 2018" > Autoencoder </a></li>
-            <li><a href="/Deep Learning/Backpropagation Through Time.html" title="Nov 26, 2018" > Backpropagation Through Time </a></li>
-            <li><a href="/Deep Learning/CBOW &amp; Skip-gram.html" title="Nov 26, 2018" > CBOW &amp; Skip-gram </a></li>
-            <li><a href="/Deep Learning/Convolutional Neural Network.html" title="Oct 08, 2018" > Convolutional Neural Network </a></li>
-            <li><a href="/Deep Learning/Gated Recurrent Unit.html" title="Nov 26, 2018" > Gated Recurrent Unit </a></li>
-            <li><a href="/Deep Learning/Generative Adversarial Network.html" title="Oct 22, 2018" > Generative Adversarial Network </a></li>
-            <li><a href="/Deep Learning/Long Short-Term Memory.html" title="Nov 26, 2018" > Long Short-Term Memory </a></li>
-            <li><a href="/Deep Learning/Receptive Field.html" title="Oct 10, 2018" > Receptive Field </a></li>
-            <li><a href="/Deep Learning/Transpose Convolution.html" title="Oct 09, 2018" > Transpose Convolution </a></li>
-            <li><a href="/Deep Learning/Variational Autoencoder.html" title="Oct 24, 2018" > Variational Autoencoder </a></li>
-        </ul>
+        <div id="posts">
+            <a href="/Deep Learning/Autoencoder.html" title="Oct 23, 2018" > Autoencoder </a>
+            <a href="/Deep Learning/Backpropagation Through Time.html" title="Nov 26, 2018" > Backpropagation Through Time </a>
+            <a href="/Deep Learning/CBOW &amp; Skip-gram.html" title="Nov 26, 2018" > CBOW &amp; Skip-gram </a>
+            <a href="/Deep Learning/Convolutional Neural Network.html" title="Oct 08, 2018" > Convolutional Neural Network </a>
+            <a href="/Deep Learning/Gated Recurrent Unit.html" title="Nov 26, 2018" > Gated Recurrent Unit </a>
+            <a href="/Deep Learning/Generative Adversarial Network.html" title="Oct 22, 2018" > Generative Adversarial Network </a>
+            <a href="/Deep Learning/Long Short-Term Memory.html" title="Nov 26, 2018" > Long Short-Term Memory </a>
+            <a href="/Deep Learning/Receptive Field.html" title="Oct 10, 2018" > Receptive Field </a>
+            <a href="/Deep Learning/Transpose Convolution.html" title="Oct 09, 2018" > Transpose Convolution </a>
+            <a href="/Deep Learning/Variational Autoencoder.html" title="Oct 24, 2018" > Variational Autoencoder </a>
+        </div>
     </div>
 </body>
 

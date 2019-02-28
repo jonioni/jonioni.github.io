@@ -16,11 +16,15 @@
         }
         h1 {
             text-align: center;
+            font-family: fantasy;
         }
         div, img {
             display: block;
-            width: 100%;
+            max-width: 100%;
             margin: auto;
+        }
+        div {
+            width: 100%;
         }
         a {
             color: black;
@@ -58,24 +62,22 @@
         }
         blockquote p {
             margin-left: 3rem;
+            font-style: italic;
         }
         blockquote:after {
             content: no-close-quote;
         }
-        h1:before,
-        h2:before,
-        h3:before,
-        h4:before,
-        h5:before {
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            font-style: italic;
+            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
         /* h2:before { content: '## '; } */
         /* h3:before { content: '### '; } */
         /* h4:before { content: '#### '; } */
-        /* h5:before { content: '##### '; } */        html {
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */        html {
     height: 100%;
 }
 
@@ -96,6 +98,8 @@ body {
 #postamble {
     width: 100%;
     text-align: right;
+    font-family: cursive;
+    font-size: larger;
 }        h1 { counter-reset: h2counter; }
 h2 { counter-reset: h3counter; }
 h3 { counter-reset: h4counter; }
@@ -255,15 +259,14 @@ $$</p>
             <!-- <span class="date">Nov 26, 2018</span> -->
         <p>
     </div>
-    <div id="disqus_thread">
-      <style type="text/css" scoped>
-        @media print {
-          #disqus_thread {
-            display: none;
-          }
+    <style type="text/css" scoped>
+      @media print {
+        #disqus_thread {
+          display: none;
         }
-      </style>
-    </div>
+      }
+    </style>
+    <div id="disqus_thread"></div>
     <script>
     
     /**
