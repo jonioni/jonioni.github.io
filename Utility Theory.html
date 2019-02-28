@@ -213,9 +213,8 @@ $$<ul>
 $$
 U : S \mapsto \mathbb{R}
 $$<ul>
-<li>$S$: Real World State, e.g. preference over something.</li>
+<li>$S​$: Real World State, e.g. preference over something.</li>
 </ul>
-<p>It is often a</p>
 <h2>Optimal Behavior</h2>
 $$
 \max_{a \in A} \sum_{s \in S} P[s|a]U(s)
@@ -229,19 +228,19 @@ $$<ul>
 <ul>
 <li>$A \succeq B$: Weakly prefers $A$ to $B$.</li>
 <li>$A \succ B$: Strictly prefers $A$ to $B$.</li>
-<li>$A \sim B$: Indifferent between $A$ and $B$.</li>
+<li>$A \sim B​$: Indifferent between $A​$ and $B​$.</li>
 </ul>
 <p>Reference: <a href="https://www.cs.ubc.ca/~kevinlb/teaching/cs532l%20-%202013-14/Lectures/Utility%20Theory.pdf">Utility Theory</a></p>
 <h2>Preference Axioms</h2>
 <ul>
-<li><p>Completeness: $\forall A, B: (A \succ B) \or (A \prec B) \or (A \sim B)$.</p>
+<li><p>Completeness: $\forall A, B: (A \succ B) \vee (A \prec B) \vee (A \sim B)$</p>
 </li>
-<li><p>Transitivity: $(A \succ B) \and (B \succ C) \Rightarrow (A \succ C)$.</p>
+<li><p>Transitivity: $ (A \succ B) \wedge (B \succ C) \Rightarrow (A \succ C) $</p>
 </li>
-<li><p>Monotonicity: $.A \succ B \and p \geq q \Rightarrow [p: A, (1 - p): B] \geq [q: A, (1 - q): B]$.</p>
+<li><p>Monotonicity: $ A \succ B \wedge p \geq q \Rightarrow [p: A, (1 - p): B] \geq [q: A, (1 - q): B] $</p>
 <p>"You should prefer a 90% chance of getting \$1000 to a 50% chance of getting \$10".</p>
 </li>
-<li><p>Substitutability: $A \sim B \Rightarrow [p: A, (1 - p), C] \sim [p: B, (1 - p): C]$.</p>
+<li><p>Substitutability: $ A \sim B \Rightarrow [p: A, (1 - p), C] \sim [p: B, (1 - p): C] $</p>
 <p>"If you prefer apple and banana equally, then a 30% getting of winning an apple looks the same to you as a 30% chance of getting a banana."</p>
 </li>
 <li><p>Decomposability: $[p: A, (1-p): [q: B, (1-q): C]] \sim [p: A, (1-p)q: B, (1-p)(1-q): C]$.</p>
@@ -283,20 +282,23 @@ $$
 \end{aligned}
 $$
 Utility means: The best expected profit next. It’s irrelevant to action, only relevant to action space.</p>
-<p>Example (Time = Cost = -Utility):</p>
+<h3>Example (Time = Cost = -Utility)</h3>
 <ul>
 <li><p>Cost of taking highway to work when there isn't traffic: 15</p>
-<p>Cost of taking highway to work when there is traffic: 30</p>
-<p>Cost of taking local roads to work: 20</p>
-<p>Odds of traffic: 0.15</p>
+</li>
+<li><p>Cost of taking highway to work when there is traffic: 30</p>
+</li>
+<li><p>Cost of taking local roads to work: 20</p>
+</li>
+<li><p>Odds of traffic: 0.15</p>
 </li>
 <li><p>Expected Utility:
 $$
 \mathbb{E}\left[ U(A) \right] = \max_{a \in A} \sum_{t} P[t] \cdot U(a|t) = 0.15\times 30 + 0.85 \times 15 = 17.25 < 20
-$$
-Expected Utility Given New Info:</p>
+$$</p>
 </li>
-<li><p>$$
+<li><p>Expected Utility Given New Info:
+$$
 \mathbb{E}\left[ U_T(A|T) \right] = \max_{a \in A} \sum_{t} P[t|T] \cdot U(a|t, T)
 $$</p>
 <ul>
