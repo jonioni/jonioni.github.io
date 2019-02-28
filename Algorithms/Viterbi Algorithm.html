@@ -187,25 +187,25 @@ h6:before {
     <div id="preamble"></div>
     <div id="content">
         <h1>Veterbi Algorithm</h1>
+<h2>Description</h2>
 <p>Given Observations:
 $$
 O = \{O_1, \dots, O_T \}
 $$
-Find best state sequence:
+Find best corresponding state sequence:
 $$
 Q = \{Q_1, \dots, Q_T \}
 $$</p>
-<h2>Method</h2>
-<ul>
-<li>Define: [The probability of ending up in $ i $ given previous observations.]</li>
-</ul>
+<h2>Preliminary</h2>
+<p>Let $\delta_t$ be the probability of ending up in $ i $ given previous observations.
 $$
 \begin{aligned}
 \delta_t(i)
     &\triangleq \max_{Q_1 \cdots Q_{t-1}} P[Q_1 \cdots Q_{t-1}Q_t = S_i, O_1 \cdots O_t | \lambda]
 \end{aligned}
-$$<p>​   $ \delta_t(i) $ is the best best score along a single path at time $ t $ that ends in sate $ S_i $.</p>
-<p>​   By induction:
+$$</p>
+<p>Here $ \delta_t(i) $ is the best best score along a single path at time $ t $ that ends in sate $ S_i $.</p>
+<p>By induction:
 $$
 \begin{aligned}
 \delta_{t+1}(j)
@@ -214,8 +214,8 @@ $$
     &= [\max_{i} \delta_{t}(i) \cdot a_{ij}] \cdot b_{j}(O_{t+1})
 \end{aligned}
 $$</p>
-<ul>
-<li><p>Procedure: ($ \psi $ is for memorization, the best state to choose)</p>
+<h2>Procedure</h2>
+<p>($ \psi $ is for memorization, the best state to choose.)</p>
 <ol>
 <li><p>Initialization:
 $$
@@ -229,9 +229,9 @@ $$</p>
 $$
 \begin{aligned}
 \delta_{t+1}(j)
-   &= \max_{i} [\delta_{t}(i) \cdot a_{ij}] \cdot b_j(O_{t+1}) \\
+ &= \max_{i} [\delta_{t}(i) \cdot a_{ij}] \cdot b_j(O_{t+1}) \\
 \psi_{t+1}(j)
-   &= \arg\max_{i} [\delta_{t}(i) \cdot a_{ij}]
+ &= \arg\max_{i} [\delta_{t}(i) \cdot a_{ij}]
 \end{aligned}
 $$</p>
 </li>
@@ -239,22 +239,21 @@ $$</p>
 $$
 \begin{aligned}
 Q_{T}^{*}
-   &= \arg\max_{i} [\delta_{T}(i)] \\
+ &= \arg\max_{i} [\delta_{T}(i)] \\
 P_{T}^{*}
-   &= \max_{i} [\delta_{T}(i)]
+ &= \max_{i} [\delta_{T}(i)]
 \end{aligned}
 $$</p>
 </li>
 <li><p>Path Backtracking:
 $$
+\begin{aligned}
 Q_{t - 1}^{*} = \psi_{t}(Q_{t}^{*})
+\end{aligned}
 $$</p>
 </li>
 </ol>
-</li>
-</ul>
-<ul>
-<li><p>Algorithm in Math:</p>
+<h2>Algorithm in Theory</h2>
 <ol>
 <li>$ \underline{\delta_0} $</li>
 <li>$\forall t \in [1, T]$:<ul>
@@ -265,8 +264,7 @@ $$</p>
 </ul>
 </li>
 </ol>
-</li>
-<li><p>Algorithm in Implementation:</p>
+<h2>Algorithm in Practice</h2>
 <ol>
 <li>$ \underline{f_0} $</li>
 <li>$ \forall t \in [1, T] $<ul>
@@ -282,7 +280,7 @@ $$</p>
 </ul>
 </li>
 </ol>
-</li>
+<ul>
 <li>Complexity: $ \Theta(N^2 \cdot T) $. See that forwarding every layer requires $ N^2 $ operations.</li>
 </ul>
 
