@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>C</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        h1 {
+            text-align: center;
+            font-family: fantasy;
+        }
+        div, img {
+            display: block;
+            max-width: 100%;
+            margin: auto;
+        }
+        div {
+            width: 100%;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+            margin: 0;
+            overflow: hidden;
+        }
+        blockquote:before,
+        blockquote:after {
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+        }
+        blockquote:after {
+            content: close-quote;
+            float: right;
+        }
+        blockquote p {
+            margin-left: 3rem;
+            font-family: sans-serif;
+        }
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
+            color: lightgray;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+    font-family: cursive;
+    font-size: larger;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>THE C PROGRAMMING LANGUAGE</h1>
+<p>[TOC]</p>
+<h2>Key Points</h2>
+<ul>
+<li><strong>Variable</strong> is the alias of the RAM address.</li>
+<li>Array of pointer: <code>int*[8] a</code>(Should be like this); 👉 <code>int *a[8]</code>(Reality in C)</li>
+</ul>
+<p>Forgotten Points:</p>
+<ul>
+<li>Size of different types: 2/4/8(integer), 4/8/16(float-point)</li>
+<li>Some special literals</li>
+<li>Storage class: <code>auto</code>, <code>register</code>, <code>extern</code>, <code>static</code>; controlling the visibility and storage of the variables</li>
+<li>Pointer variable size is 8 bytes</li>
+<li>Bit field in <code>struct</code>: size is the largest type</li>
+<li>Type <code>union</code>: last assigned</li>
+<li>Input/Output Functions: <code>putchar/getchar</code>, <code>puts/gets</code>, <code>printf/scanf</code></li>
+<li>File IO Functions: <code>fopen/fclose</code>, <code>fputc/fputs/fscanf</code>, <code>fgetc/fgets/fprintf</code></li>
+<li>Memory Allocation Functions: <code>calloc/malloc/realloc</code></li>
+</ul>
+<h2>Types, Values, and Variables</h2>
+<h3>Types</h3>
+<p>None Type(For <em>function parameter</em>, <em>function return</em>, and <em>pointer</em>):</p>
+<ul>
+<li><code>void</code>: 1</li>
+</ul>
+<p>Character:</p>
+<ul>
+<li><code>char</code>/<code>unsigned char</code>: 1</li>
+</ul>
+<p>Integer:</p>
+<ul>
+<li><code>short</code>/<code>unsigned short</code>: 2</li>
+<li><code>int</code>/<code>unsigned int</code>: 4</li>
+<li><code>long</code>/<code>unsigned long</code>: 8</li>
+</ul>
+<p>Floating Point:</p>
+<ul>
+<li><code>float</code>: 4</li>
+<li><code>double</code>: 8</li>
+<li><code>long double</code>: 16</li>
+</ul>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+
+int main() {
+   printf(&quot;Storage size: %d \n&quot;, sizeof(double));
+   return 0;
+}
+</code></pre>
+<h3>Values</h3>
+<p>Special literals:</p>
+<ul>
+<li><p>Integers Literals:</p>
+<pre><code class="lang-c">0213       /* octal */
+0x4b       /* hexadecimal */
+30u        /* unsigned int */
+30l        /* long */
+30ul       /* unsigned long */
+</code></pre>
+</li>
+<li><p>Floating-point Literals:</p>
+<pre><code class="lang-c">314159E-5L    /* Legal */
+</code></pre>
+</li>
+<li><p>Character Constants:</p>
+<pre><code class="lang-c">&#39;x&#39;
+&#39;\t&#39;
+&#39;\u02C0&#39;
+</code></pre>
+</li>
+<li><p>String Literals:</p>
+<pre><code class="lang-c">&quot;hello, \
+dear&quot;
+&quot;hello, &quot; &quot;d&quot; &quot;ear&quot;
+</code></pre>
+</li>
+</ul>
+<h3>Variables</h3>
+<p>When a local variable is defined, it is not initialized by the system, you must initialize it yourself. Global variables are initialized automatically by the system: <code>int, float, double</code>(0); <code>char</code>(<code>'\0'</code>); pointer(<code>NULL</code>).</p>
+<h4>Constants</h4>
+<ul>
+<li><code>#DEFINE PI 3.1415926</code></li>
+<li><code>const int a = 1;</code></li>
+</ul>
+<h4>Storage Classes</h4>
+<p>A storage class defines the scope (visibility) and life-time of variables and/or functions within a C Program.</p>
+<ul>
+<li><code>auto int month;</code>: default storage class for all local variables</li>
+<li><code>register int miles;</code>:<ul>
+<li>define local variables that should be stored in a register instead of RAM. This means that the variable has a maximum size equal to the register size (usually one word) and can't have the unary '&amp;' operator applied to it (as it does not have a memory location); </li>
+<li>should only be used for variables that require quick access such as counters;</li>
+<li>should also be noted that defining 'register' does not mean that the variable will be stored in a register. It means that it MIGHT be stored in a register depending on hardware and implementation restrictions.</li>
+</ul>
+</li>
+<li><code>static int count = 5;</code><ul>
+<li>instructs the compiler to keep a local variable in existence during the life-time of the program instead of creating and destroying it each time it comes into and goes out of scope;</li>
+<li>Therefore, making local variables static allows them to maintain their values between function calls.</li>
+</ul>
+</li>
+<li><code>extern void write_extern();</code>, <code>extern int count;</code><ul>
+<li>is used to declare a global variable or function in another file;</li>
+<li>to give a reference of a global variable that is visible to ALL the program files;</li>
+<li>When you use 'extern', the variable cannot be initialized.</li>
+</ul>
+</li>
+</ul>
+<h2>Special Types</h2>
+<h3>Pointer</h3>
+<pre><code class="lang-c">int  var = 20;  /* actual variable declaration */
+int  *p_var;  /* pointer variable declaration */
+p_var = &amp;var;  /* store address of var in pointer variable*/
+
+/* address of variable */
+printf(&quot;Address of var variable: %x\n&quot;, &amp;var  );
+
+/* address stored in pointer variable */
+printf(&quot;Address stored in ip variable: %x\n&quot;, ip );
+
+/* access the value using the pointer */
+printf(&quot;Value of *ip variable: %d\n&quot;, *ip );
+</code></pre>
+<p>Size of pointer is 8:</p>
+<pre><code class="lang-c">int a = 1;
+int *p = &amp;a;
+printf(&quot;Address: %x \n&quot;, p);  /* Address: e30ee768 */
+printf(&quot;Storage size: %d \n&quot;, sizeof(int*));  /* Storage size: 8 */
+</code></pre>
+<p>Better to assign unused pointer to <code>NULL</code>:</p>
+<pre><code class="lang-c">int  *ptr = NULL;
+printf(&quot;The value of ptr is : %x\n&quot;, ptr  );
+/* The value of ptr is 0 */
+
+if(ptr)     /* succeeds if p is not null */
+if(!ptr)    /* succeeds if p is null */
+</code></pre>
+<p>If function returns pointer, it should be declared with <code>static</code> storage class.</p>
+<pre><code class="lang-c">int * getRandom( ) {
+   static int  r[10];
+   // ...
+   return r;
+}
+</code></pre>
+<p>Arrays of pointers:</p>
+<pre><code class="lang-c">int *ptr[MAX];  // An array of int pointer &lt;=&gt; (int*)[MAX] ptr
+char *names[] = {  // &lt;=&gt; (char*)[MAX] ptr
+    &quot;Zara Ali&quot;,
+    &quot;Hina Ali&quot;,
+    &quot;Nuha Ali&quot;,
+    &quot;Sara Ali&quot;
+};
+</code></pre>
+<h3>Strings</h3>
+<pre><code class="lang-c">char greeting[6] = {&#39;H&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, &#39;\0&#39;};
+char greeting[] = &quot;Hello&quot;;
+</code></pre>
+<pre><code class="lang-c">#include &lt;string.h&gt;
+
+char str1[12] = &quot;Hello&quot;;
+char str2[12] = &quot;World&quot;;
+char str3[12];
+strcpy(str3, str1);  // str3 &lt;= str1
+strcat( str1, str2);  // str1 &lt;= str1 + str2
+int len = strlen(str1);
+</code></pre>
+<h3>Typedef</h3>
+<pre><code class="lang-c">typedef struct Books {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+} Book;
+</code></pre>
+<h2>Built-In Data Structures</h2>
+<h3>Array</h3>
+<pre><code class="lang-c">double balance[5] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+double balance[] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+int a[3][4] = {  
+   {0, 1, 2, 3} ,   /*  initializers for row indexed by 0 */
+   {4, 5, 6, 7} ,   /*  initializers for row indexed by 1 */
+   {8, 9, 10, 11}   /*  initializers for row indexed by 2 */
+};
+int a[3][4] = {0,1,2,3,4,5,6,7,8,9,10,11};
+</code></pre>
+<h3>Struct</h3>
+<pre><code class="lang-c">struct Books {
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+} book;
+
+struct Books Book1;        /* Declare Book1 of type Book */
+strcpy( Book1.title, &quot;C Programming&quot;);
+strcpy( Book1.author, &quot;Nuha Ali&quot;); 
+strcpy( Book1.subject, &quot;C Programming Tutorial&quot;);
+Book1.book_id = 6495407;
+</code></pre>
+<p>To access any member of a structure, we use the <strong>member access operator (.)</strong>.</p>
+<p>Structures as function arguments:</p>
+<pre><code class="lang-c">void printBook( struct Books book ) {
+   printf( &quot;Book title : %s\n&quot;, book.title);
+   printf( &quot;Book author : %s\n&quot;, book.author);
+   printf( &quot;Book subject : %s\n&quot;, book.subject);
+   printf( &quot;Book book_id : %d\n&quot;, book.book_id);
+}
+</code></pre>
+<p>Pointers to structure:</p>
+<pre><code class="lang-c">struct Books *struct_pointer;
+struct_pointer = &amp;Book1;
+struct_pointer-&gt;title;
+</code></pre>
+<h4>Bit Fields</h4>
+<pre><code class="lang-c">struct packed_struct {
+   unsigned int f1:1;
+   unsigned int f2:1;
+   unsigned int f3:1;
+   unsigned int f4:1;
+   unsigned int type:4;
+   unsigned int my_int:9;
+} pack;
+</code></pre>
+<p>Note that:</p>
+<ul>
+<li>C automatically packs the above bit fields <strong>as compactly as</strong> possible</li>
+<li><code>pack</code> takes up 4 bytes (the size of the first <code>int</code>), as the maximum possible size that the values could take is 3 bytes(8 + 9 bits).</li>
+</ul>
+<h3>Union</h3>
+<ul>
+<li>store different data types in the same memory location;</li>
+<li>only one member can contain a value at any given time;</li>
+<li>an efficient way of using the same memory location for multiple-purpose.</li>
+</ul>
+<pre><code class="lang-c">union Data {
+   int i;
+   float f;
+   char str[20];
+} data;
+</code></pre>
+<ul>
+<li>The memory occupied by a union will be large enough to hold the largest member of the union.</li>
+<li>In the above example, data type will occupy 20 bytes of memory space.</li>
+</ul>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+union Data {
+   int i;
+   float f;
+   char str[20];
+};
+
+int main( ) {
+   union Data data;        
+   printf( &quot;Memory size occupied by data : %d\n&quot;, sizeof(data));  /* Memory size occupied by data : 20 */
+   return 0;
+}
+</code></pre>
+<ul>
+<li>When assigning multiple types, the values got corrupted because they all take the the same memory space. </li>
+<li>The last assigned type is the final type:</li>
+</ul>
+<pre><code class="lang-c">union Data data;        
+
+data.i = 10;
+data.f = 220.5;
+strcpy( data.str, &quot;C Programming&quot;);
+
+printf( &quot;data.i : %d\n&quot;, data.i);
+printf( &quot;data.f : %f\n&quot;, data.f);
+printf( &quot;data.str : %s\n&quot;, data.str);
+
+/*  data.i : 1917853763
+    data.f : 4122360580327794860452759994368.000000
+    data.str : C Programming */
+</code></pre>
+<h2>Functions</h2>
+<p>Everything is pass by value!</p>
+<p>E.g. structs, pointers, ...</p>
+<h2>Input &amp; Output</h2>
+<p><code>int getchar(void)</code>, <code>int putchar(int c)</code>:</p>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+int c;
+
+printf( &quot;Enter a value :&quot;);
+c = getchar( );
+
+printf( &quot;\nYou entered: &quot;);
+putchar( c );
+</code></pre>
+<p><code>char *gets(char *s)</code>, <code>int puts(const char *s)</code>:</p>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+char str[100];
+
+printf( &quot;Enter a value :&quot;);
+gets( str );
+
+printf( &quot;\nYou entered: &quot;);
+puts( str );
+</code></pre>
+<p><code>int scanf(const char *format, addresses...)</code>, <code>int printf(const char *format, variables, variables)</code>:</p>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+char str[100];
+int i;
+
+printf( &quot;Enter a value :&quot;);
+scanf(&quot;%s %d&quot;, str, &amp;i);
+
+printf( &quot;\nYou entered: %s %d &quot;, str, i);
+</code></pre>
+<h3>File IO</h3>
+<ul>
+<li>Open:<ul>
+<li><code>FILE *fopen( const char * filename, const char * mode )</code></li>
+<li><code>int fclose( FILE *fp )</code></li>
+</ul>
+</li>
+<li>Write:<ul>
+<li><code>int fputc( int c, FILE *fp )</code></li>
+<li><code>int fputs( const char *s, FILE *fp )</code></li>
+<li><code>int fprintf(FILE *fp,const char *format, ...)</code></li>
+</ul>
+</li>
+<li>Read:<ul>
+<li><code>int fgetc( FILE *fp )</code></li>
+<li><code>char *fgets( char *buf, int n, FILE *fp )</code></li>
+<li><code>int fscanf(FILE *fp, const char *format, ...)</code>: stops reading after encountering the first space character</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+FILE *fp;
+
+fp = fopen(&quot;/tmp/test.txt&quot;, &quot;w+&quot;);
+fprintf(fp, &quot;This is testing for fprintf...\n&quot;);
+fputs(&quot;This is testing for fputs...\n&quot;, fp);
+fclose(fp);
+</code></pre>
+<h4>Command-Line Arguments</h4>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+int main( int argc, char *argv[] )  {
+
+   if( argc == 2 ) {
+      printf(&quot;The argument supplied is %s\n&quot;, argv[1]);
+   }
+   else if( argc &gt; 2 ) {
+      printf(&quot;Too many arguments supplied.\n&quot;);
+   }
+   else {
+      printf(&quot;One argument expected.\n&quot;);
+   }
+}
+</code></pre>
+<h2>Preprocessors</h2>
+<pre><code class="lang-c">#include
+#define
+#undef
+#ifdef MACRO // Returns true if this macro is defined.
+#ifndef MACRO  // Returns true if this macro is not defined.
+#if
+#else
+#elif
+#endif  // Ends preprocessor conditional.
+#error
+#pragma
+</code></pre>
+<p>Usage:</p>
+<pre><code class="lang-c">#ifndef MESSAGE
+   #define MESSAGE &quot;You wish!&quot;
+#endif
+
+#define  message_for(a, b)  \
+   printf(#a &quot; and &quot; #b &quot;: We love you!\n&quot;)
+
+#if SYSTEM_1
+   # include &quot;system_1.h&quot;
+#elif SYSTEM_2
+   # include &quot;system_2.h&quot;
+#endif
+</code></pre>
+<p>Predefined Macros:</p>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+
+printf(&quot;File: %s\n&quot;, __FILE__ );
+printf(&quot;Date: %s\n&quot;, __DATE__ );
+printf(&quot;Time: %s\n&quot;, __TIME__ );
+printf(&quot;Line: %d\n&quot;, __LINE__ );
+printf(&quot;ANSI: %d\n&quot;, __STDC__ );  // 1 when compiled with ANSI standard
+</code></pre>
+<h2>Errors</h2>
+<ul>
+<li><p>Use <code>stderr</code> file stream to output all the errors.</p>
+</li>
+<li><p><code>&lt;stdlib.h&gt;</code>: <code>EXIT_SUCCESS = 0</code>;  <code>EXIT_FAILURE = -1</code>.</p>
+</li>
+</ul>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+main() {
+
+   int dividend = 20;
+   int divisor = 5;
+   int quotient;
+
+   if( divisor == 0) {
+      fprintf(stderr, &quot;Division by zero! Exiting...\n&quot;);
+      exit(EXIT_FAILURE);
+   }
+
+   quotient = dividend / divisor;
+   fprintf(stderr, &quot;Value of quotient : %d\n&quot;, quotient );
+
+   exit(EXIT_SUCCESS);
+}
+</code></pre>
+<h2>Memory Allocation</h2>
+<ul>
+<li>Allocate:<ul>
+<li><code>void *calloc(int num, int size)</code>: an array of <strong>num</strong> elements each of which size in bytes will be <strong>size</strong>; values are initialized as 0</li>
+<li><code>void *malloc(int num)</code>: an array of <strong>num</strong> bytes; values are not initialized</li>
+<li><code>void *realloc(void *address, int newsize)</code></li>
+</ul>
+</li>
+<li>Free:<ul>
+<li><code>void free(void *address)</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+/* allocate memory dynamically */
+char *description;
+description = malloc( 200 * sizeof(char) );
+description = calloc(200, sizeof(char));
+
+if( description == NULL ) {
+    fprintf(stderr, &quot;Error - unable to allocate required memory\n&quot;);
+} else {
+    strcpy( description, &quot;Zara ali a DPS student in class 10th&quot;);
+}
+
+printf(&quot;Description: %s\n&quot;, description );
+
+/* release memory using free() function */
+free(description);
+</code></pre>
+<h2>Reference</h2>
+<ul>
+<li><a href="https://www.tutorialspoint.com/cprogramming/c_data_types.htm">C Tutorial</a></li>
+</ul>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">May 10, 2018</span> -->
+        <p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <script>
+    // let
+    const findSpecificNode = (selector, content) => Array.prototype.filter.call(
+      document.querySelectorAll(selector), node => node.innerHTML == content
+    ).find(x => x)
+    const tocAnchorNode = findSpecificNode('p', '[TOC]')
+    // in
+    if (tocAnchorNode) {
+      const tocNode = document.createElement('nav')
+      const titleNode = document.createElement('h2')
+      tocNode.setAttribute("id", "toc")
+      tocAnchorNode.parentNode.insertBefore(tocNode, tocAnchorNode.nextSibling)
+      tocAnchorNode.parentNode.removeChild(tocAnchorNode)
+      document.querySelectorAll('h2, h3, h4, h5, h6').forEach((node, i) => node.setAttribute("id", i))
+      tocbot.init({
+        tocSelector: '#toc',
+        contentSelector: '#content',
+        headingSelector: 'h2, h3, h4',
+      });
+    }
+    </script>
+    <style>
+      nav {
+        border: dotted lightgray;
+        white-space: pre-wrap;
+        font-size: smaller;
+        opacity: 0.5;
+      }
+      nav li {
+        list-style: none;
+        margin: 0;
+      }
+    </style>    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+    crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+    crossorigin="anonymous"></script>
+<script>
+    renderMathInElement(
+        document.body,
+        {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+            ]
+        }
+    )
+</script>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<!-- Languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+<script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+<script>hljs.initHighlightingOnLoad()</script>
+    <style type="text/css" scoped>
+      @media print {
+        #disqus_thread {
+          display: none;
+        }
+      }
+    </style>
+    <div id="disqus_thread"></div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
+
+</html>

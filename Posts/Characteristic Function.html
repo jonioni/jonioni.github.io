@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Basic Inequalities</title>
+    <title>Characteristic Function</title>
     <style>
         body {
             font-family: monospace;
@@ -195,20 +195,121 @@ h6:before {
 <body>
     <div id="preamble"></div>
     <div id="content">
-        <h1>Basic Inequalities</h1>
-<p>Basic Inequalities in Statistics.</p>
-<h2>Markov's Inequality</h2>
-<h2>Chebyshev's Inequality</h2>
-<h2>Chernoff Bound</h2>
+        <h1>Characteristic Function</h1>
+<h2>Convolutional Integral</h2>
+<p>To compute the distribution for $Z = X + Y​$, we have:
+$$
+f_Z(z) = \int_{\mathbb{R}} f_X(x) f_Y(z - x) dx
+$$
+The new pdf is the convolutional integral of $X, Y$. However, for $X_1, \dots, X_n$ it might be hard to compute the integral.</p>
+<h2>Characteristic Function Basics</h2>
+<p>Note that similar to CDF, the characteristic function is unique for every random variable $X​$.</p>
+<h3>Properties</h3>
+<p>The convolutional integral can correspond to operations in terms of characteristic functions.
+$$
+\begin{aligned}
+f_Z(z) 
+    &= \int_{\mathbb{R}} f_X(x)f_Y(z - x)dx \\
+\phi_Z(t)
+    &= \mathbb{E}\left[ e^{itZ} \right] \\
+    &= \int_{\mathbb{R}} f_Z(z)e^{itz} dz \\
+    &= \int_{\mathbb{R}} e^{itz}\int_{\mathbb{R}} f_X(x)f_Y(z - x)dx dz \\
+    &= \int_{\mathbb{R}} e^{it(x + y)}\int_{\mathbb{R}} f_X(x)f_Y(y)dx dy \\
+    &= \int_{\mathbb{R}} f_X(x) \int_{\mathbb{R}} e^{it(x + y)}f_Y(y) dy dx \\
+    &= \int_{\mathbb{R}} e^{itx}f_X(x) \int_{\mathbb{R}} e^{ity}f_Y(y) dy dx \\
+    &= \int_{\mathbb{R}} e^{itx}f_X(x) dx \int_{\mathbb{R}} e^{ity}f_Y(y) dy \\
+    &= \phi_X(t) \cdot \phi_Y(t) \\
+\phi_{X + Y}
+    &= \phi_X(t) \cdot \phi_Y(t) = \phi_{X \ast Y} \\
+\phi_{X_1 + \cdots + X_n}
+    &= \phi_{X_1}(t) \cdots \phi_{X_n}(t)
+\end{aligned}
+$$
+Reference:</p>
+<ul>
+<li><a href="https://math.stackexchange.com/questions/2910885/characteristic-function-of-a-convolution-of-measures">characteristic function of a convolution of measures</a></li>
+</ul>
+<h3>To CDF</h3>
+<p>Note that there is a one-to-one correspondence between CDF and CF!
+$$
+\begin{aligned}
+f_X(x)
+    &= \frac{1}{2\pi} \int_{\mathbb{R}} e^{-itx} \phi_X(t) dt
+\end{aligned}
+$$
+Reference:</p>
+<ul>
+<li><a href="https://math.stackexchange.com/questions/1702105/characteristic-function-and-cdf">Characteristic function and cdf</a></li>
+<li><a href="https://www.wikiwand.com/en/Characteristic_function_(probability_theory">Inversion formulae - Wikipedia</a>)</li>
+<li><a href="http://mathworld.wolfram.com/CharacteristicFunction.html">Characteristic Function - Wolfram</a></li>
+</ul>
 
     </div>
     <div id="postamble">
         <p>
             <span class="author">by Jon</span>
             <br>
-            <!-- <span class="date">Sep 24, 2018</span> -->
+            <!-- <span class="date">Feb 12, 2019</span> -->
         <p>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <script>
+    // let
+    const findSpecificNode = (selector, content) => Array.prototype.filter.call(
+      document.querySelectorAll(selector), node => node.innerHTML == content
+    ).find(x => x)
+    const tocAnchorNode = findSpecificNode('p', '[TOC]')
+    // in
+    if (tocAnchorNode) {
+      const tocNode = document.createElement('nav')
+      const titleNode = document.createElement('h2')
+      tocNode.setAttribute("id", "toc")
+      tocAnchorNode.parentNode.insertBefore(tocNode, tocAnchorNode.nextSibling)
+      tocAnchorNode.parentNode.removeChild(tocAnchorNode)
+      document.querySelectorAll('h2, h3, h4, h5, h6').forEach((node, i) => node.setAttribute("id", i))
+      tocbot.init({
+        tocSelector: '#toc',
+        contentSelector: '#content',
+        headingSelector: 'h2, h3, h4',
+      });
+    }
+    </script>
+    <style>
+      nav {
+        border: dotted lightgray;
+        white-space: pre-wrap;
+        font-size: smaller;
+        opacity: 0.5;
+      }
+      nav li {
+        list-style: none;
+        margin: 0;
+      }
+    </style>    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+    crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+    crossorigin="anonymous"></script>
+<script>
+    renderMathInElement(
+        document.body,
+        {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+            ]
+        }
+    )
+</script>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<!-- Languages -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+<script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+<script>hljs.initHighlightingOnLoad()</script>
     <style type="text/css" scoped>
       @media print {
         #disqus_thread {
@@ -237,31 +338,6 @@ h6:before {
     })();
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-    <!-- Languages -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
-    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
-    <script>hljs.initHighlightingOnLoad()</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
-        crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
-        crossorigin="anonymous"></script>
-    <script>
-        renderMathInElement(
-            document.body,
-            {
-                delimiters: [
-                    { left: "$$", right: "$$", display: true },
-                    { left: "$", right: "$", display: false },
-                ]
-            }
-        )
-    </script></body>
+</body>
 
 </html>
