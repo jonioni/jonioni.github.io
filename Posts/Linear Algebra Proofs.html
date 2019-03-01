@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Linear Algebra Proofs</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 14pt;
+            font-weight: lighter;
+            word-wrap: break-word;
+            margin: auto;
+            padding: 1rem;
+            max-width: 48rem;
+        }
+        h1 {
+            text-align: center;
+            font-family: fantasy;
+        }
+        div, img {
+            display: block;
+            max-width: 100%;
+            margin: auto;
+        }
+        div {
+            width: 100%;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 1rem;
+        }
+        code {
+            color: salmon;
+        }
+        pre {
+            white-space: pre-wrap;
+            border: dashed lightgray;
+            border-radius: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid lightgray;
+        }
+        q, blockquote {
+            quotes: "❝" "❞" "❛" "❜";
+            margin: 0;
+            overflow: hidden;
+        }
+        blockquote:before,
+        blockquote:after {
+            color: lightgray;
+            font-size: 3rem;
+        }
+        blockquote:before {
+            content: open-quote;
+            float: left;
+        }
+        blockquote:after {
+            content: close-quote;
+            float: right;
+        }
+        blockquote p {
+            margin-left: 3rem;
+            font-family: fantasy;
+            font-style: italic;
+        }
+        h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
+            color: lightgray;
+            font-size: smaller;
+        }
+        /* h1:before { content: '# '; } */
+        /* h2:before { content: '## '; } */
+        /* h3:before { content: '### '; } */
+        /* h4:before { content: '#### '; } */
+        /* h5:before { content: '##### '; } */
+        /* h6:before { content: '###### '; } */        html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+#preamble {
+    width: 100%;
+}
+
+#postamble {
+    width: 100%;
+    text-align: right;
+    font-family: cursive;
+    font-size: larger;
+}        h1 { counter-reset: h2counter; }
+h2 { counter-reset: h3counter; }
+h3 { counter-reset: h4counter; }
+h4 { counter-reset: h5counter; }
+h5 { counter-reset: h6counter; }
+h2:before {
+  counter-increment: h2counter;
+  content: counter(h2counter) " ";
+}
+h3:before {
+  counter-increment: h3counter;
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+h4:before {
+  counter-increment: h4counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+h5:before {
+  counter-increment: h5counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " ";
+}
+h6:before {
+  counter-increment: h6counter;
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) " ";
+}        .theorem {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.theorem:before {
+    content:"Theorem. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.lemma {
+    display:block;
+    clear: both;
+    font-style: italic;
+}
+
+.lemma:before{
+    content:"Lemma. ";
+    float: left;
+    font-weight:bold;
+    font-style: normal;
+}
+
+.proof {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.proof p:last-child {
+    display: inline;
+}
+
+.proof:before{
+    content:'Proof. ';
+    float: left;
+    font-weight:bold;
+    font-style: italic;
+}
+
+.proof:after{
+    content:"◼";
+    float:right;
+    font-size: smaller;
+}
+
+.definition {
+    display:block;
+    clear: both;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition. ";
+    float: left;
+    font-weight: bold;
+    font-style: italic;
+}    </style>
+</head>
+
+<body>
+    <div id="preamble"></div>
+    <div id="content">
+        <h1>Proof of The Fundamental Theorem of Linear Algebra</h1>
+<h2>Orthogonality of $\mathcal{R}(A), \mathcal{R}(A^T), \mathcal{N}(A), \mathcal{N}(A^T)$</h2>
+<h3>Statement</h3>
+<blockquote>$$
+\mathcal{N}(A) \perp \mathcal{R}(A^T) \\
+\mathcal{R}(A) \perp \mathcal{N}(A^T)
+$$
+</blockquote>
+<h3>Proof</h3>
+<p>Strang's "The Fundamental Theorem of Linear Algebra" Page 2-3:
+$$
+\begin{aligned}
+\mathcal{R}(A) &: \text{Column Space(Space Spanned by Column Vectors)} \\
+\mathcal{R}(A^T) &: \text{Row Space(Space Spanned by Row Vectors)} \\
+\mathcal{N}(A) &: \underline{x} \in \mathcal{N}(A), A\underline{x} = 0, \underline{x} \cdot (\forall \underline{r} \in \text{Row(A)}) = 0 \\
+&\implies \mathcal{N}(A) \perp \mathcal{R}(A^T) \\
+\mathcal{N}(A^T) &: \mathcal{N}(A^T) \perp \mathcal{R}(A) (\text{Based on above})
+\end{aligned}
+$$
+Thus we have:
+$$
+\mathcal{N}(A) \perp \mathcal{R}(A^T) \\
+\mathcal{R}(A) \perp \mathcal{N}(A^T)
+$$</p>
+<hr>
+<h2>Every Vector Space = A Subspace + Its Orthogonal Complement</h2>
+<h3>Statement</h3>
+<blockquote><p>Any vector space is the direct sum of a subspace and its orthogonal complement. 
+$$
+V = W \oplus W^{\bot}
+$$</p>
+</blockquote>
+<h3>Proof<sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup></h3>
+$$
+\forall \underline{v} \in V, \exists \underline{w} = \sum_{i=1}^{r} \frac{\langle \underline{v} | \underline{w_i}\rangle}{||\underline{w_i}||^2} \underline{w_i} \in W,
+\\
+(\text{Every vector space have orthonormal basis, through G-S}: \{w_i\})
+\\
+\underline{v} = (\underline{w}) + (\underline{v} - \underline{w}) \\
+(\underline{v} = \text{orthogonal projection onto W + complement})
+$$<p>Then we can verify:
+$$
+\langle \underline{v} - \underline{w} | \underline{w} \rangle = 0 \implies \underline{v} - \underline{w} \in W^{\bot}
+$$
+Also:
+$$
+\underline{w} \in W, \underline{w} \in W^{\bot} \implies\langle\underline{w} | \underline{w} \rangle = 0 \implies \underline{w} = 0 \\
+W \cap W^{\bot} = \{\underline{0}\}
+$$
+Therefore:
+$$
+\underline{w} \in W, \underline{v} - \underline{w} \in W^{\bot}, W \cap W^{\bot} = \{\underline{0}\} \\
+\implies V = W \oplus W^{\bot}\\
+\implies dim(V) = dim(W) + dim(W^T)
+$$</p>
+<hr>
+<h2>The Two Most Important Laws of Linear Algebra</h2>
+<h3>Rank-Nullity Theorem</h3>
+<h4>Statement</h4>
+<blockquote>$$
+\begin{aligned}
+dim(V) &= rank(A) + nullity(A) \\
+\end{aligned}
+$$
+</blockquote>
+<h4>Proof: Theorem 3.4.11</h4>
+<ol>
+<li><p>Suppose a basis for N(A):
+ $$
+ \{\underline{v_1}, ..., \underline{v_k} \}
+ $$</p>
+</li>
+<li><p>Then the basis for V:
+ $$
+   \{\underline{v_1}, ..., \underline{v_k}, ..., \underline{v_n} \}
+ $$
+ Then we only need to show that:
+ $$
+   \{ A(\underline{v_{k+1}}), \cdots, A(\underline{v_n})\} \text{ is the basis of } \mathcal{R}(A)
+ $$</p>
+</li>
+<li><p>For R(A):
+ $$
+   \forall \underline{w} \in \mathcal{R}(A), \exists \underline{v} = \sum_{i=1}^{n}s_i\underline{v_i} \in V, \\
+   \underline{w} = A(\underline{v}) = \sum_{i=1}^{n}s_i A(\underline{v_i}) = \sum_{i=k+1}^{n}s_i A(\underline{v_i}) 
+   \\
+   \Downarrow \\
+   \{ A(\underline{v_{k+1}}), \cdots, A(\underline{v_n})\} \text{ span } \mathcal{R}(A)
+ $$
+ Every vector in range of A can be represented as a linear combination of:
+ $$
+   \{ A(\underline{v_{k+1}}), \cdots, A(\underline{v_n})\}
+ $$
+ And:
+ $$
+   \because \{\underline{v_{k+1}}, \underline{v_n}\} \notin \mathcal{N}(A), A(\underline{v_i}) \neq 0 \\
+   \therefore \underline{w} = \sum_{i=k+1}^{n}s_i A(\underline{v_i}) = \underline{0}\implies  s_i = 0 \\
+   \implies \{A(\underline{v_{k+1}}), ..., A(\underline{v_n})\} \text{ are linearly independent}
+ $$</p>
+</li>
+<li><p>This means every vector has a <strong>unique</strong> representation of linear combination of vectors in this set. According to the definition of "basis", these vectors form a basis for the range of A. This means:
+ $$
+ rank(A) = dim \mathcal({R}(A)) = n - k = dim(V) - dim(\mathcal{N}(A))
+ $$</p>
+</li>
+</ol>
+<hr>
+<h3>Row Space and Column Space Has <strong>Same Dimension</strong></h3>
+<h4>Statement</h4>
+<blockquote>$$
+dim \mathcal{R}(A) = dim\mathcal{R}(A^T) = r
+$$
+</blockquote>
+<p>One way to show it is through row reduction. Row reduction is simply linear recombination of row vectors, thus row space won't change. Suppose there are <strong>r</strong> pivots after row reduction. Pivots in row space are also pivots in column space. Therefore row space and column space has same number of linearly independent vectors in their bases.</p>
+<h4>Proof: Corollary 3.4.12</h4>
+$$
+\begin{aligned}
+\mathcal{R}(A)^{\bot} &= \{\underline{v} \in F^m | \underline{v} \cdot \underline{y} = 0, \forall \underline{y} \in \mathcal{R}(A) \} \\
+
+\mathcal{R}(A^H)^{\bot} 
+&= \{\underline{v} \in F^n | \underline{v}^H \cdot \underline{x} = 0, \forall \underline{x} \in \mathcal{R}(A^H) \} \\
+&= \{\underline{v} \in F^n |  \underline{v}^H (A^H \underline{y}) = 0, \forall \underline{y} \in F^m\} \\
+&= \{\underline{v} \in F^n |  \underline{v}^H A^H = 0\} \\
+&= \{\underline{v} \in F^n |  A\underline{v} = 0\} \\
+&= \mathcal{N}(A)
+\end{aligned}
+$$<p>Since every vector space is the direct sum of a subspace + its orthogonal complement:</p>
+$$
+\begin{aligned}
+dim(F^n) &= dim(\mathcal{R}(A^H)) + dim(\mathcal{R}(A^H)^{\bot}) \\
+n &= dim(\mathcal{R}(A^H)) + dim(\mathcal{N}(A))
+\end{aligned}
+$$<p>Also, by rank-nullity theorem:</p>
+$$
+dim(F^n) = n = dim(\mathcal{R}(A)) +dim(\mathcal{N}(A))
+$$<p>Therefore we have:</p>
+$$
+\begin{aligned}
+dim(\mathcal{R}(A^H)) = n - dim(\mathcal{N}(A)) = dim(\mathcal{R}(A))
+\end{aligned}
+$$<p>Thus the row space of A has same dimension as its column space.</p>
+<hr>
+<h2>Dimensions</h2>
+<h3>Statement</h3>
+<p>The Dimensions of $\mathcal{R}(A), \mathcal{R}(A^T), \mathcal{N}(A), \mathcal{N}(A^T)$.</p>
+<h3>Proof</h3>
+<p>First of all, we assume:</p>
+$$
+dim(\mathcal{R}(A)) = dim(\mathcal{R}(A^T)) = r 
+$$<p>By rank-nullity theorem, we have:</p>
+$$
+dim(\mathbb{R}^m) = m = dim(\mathcal{R}(A)) + dim(\mathcal{N}(A)) = r + (n-r) \\
+dim(\mathbb{R}^n) = n = dim(\mathcal{R}(A^T)) + dim(\mathcal{N}(A^T)) = r + (m-r)
+$$<p>Thus:</p>
+$$
+dim(\mathcal{N}(A)) = n - r \\
+dim(\mathcal{N}(A^T)) = m - r
+$$<hr>
+<h2>Vector Space Decomposition</h2>
+<h3>Statement</h3>
+<blockquote><p>Every vector $x \in\mathbb{R}^n$ can be decomposed as: $x_r + x_n$.</p>
+</blockquote>
+<h3>Proof</h3>
+<ol>
+<li><p>We need only to prove that V is the direct sum of row space and null space:
+$$
+V = \mathcal{R}(A^T) \oplus \mathcal{N}(A)
+$$</p>
+</li>
+<li><p>It's the same as to prove subspace and its orthogonal complement:
+$$
+\mathcal{R}(A^T) = \mathcal{N}(A)^{\bot} \\\vee\\ \mathcal{N}(A) = \mathcal{R}(A^T)^{\bot}
+$$</p>
+<p>We have proved the orthogonality of these spaces, but we haven’t proved that that they are orthogonal complement to each other. Nevertheless this is indeed the case:</p>
+<p>$$
+\mathcal{N}(A) \perp \mathcal{R}(A^T), \\
+\forall \underline{v} \in \mathcal{N}(A), \forall \underline{r} \in \mathcal{R}(A^T), \\
+\underline{v} \perp \underline{r} \\
+\Downarrow \\
+\underline{v} \subseteq \mathcal{R}(A^T)^{\bot} \\
+\Downarrow \\
+\mathcal{N}(A) \subseteq \mathcal{R}(A^T)^{\bot}
+$$</p>
+<p>And:</p>
+<p>$$
+\forall \underline{v} \in \mathcal{R}(A^T)^{\bot}, \forall \underline{r} \in \mathcal{R}(A^T), \\
+\underline{v} \cdot \underline{r} = 0 \\
+\Downarrow \\
+\underline{v} \in \mathcal{N}(A), \\
+\Downarrow \\
+\mathcal{R}(A^T)^{\bot} \subseteq \mathcal{N}(A)
+$$</p>
+<p>Thus:</p>
+<p>$$
+\mathcal{N}(A) = \mathcal{R}(A^T)^{\bot}
+$$</p>
+<p>Therefore according to 2:</p>
+<p>$$
+\begin{aligned}
+\mathbb{R}^n
+&= \mathcal{R}(A^T) \oplus \mathcal{R}(A^T)^{\bot} \\
+&= \mathcal{R}(A^T) \oplus \mathcal{N}(A)
+\end{aligned}
+$$</p>
+</li>
+<li><p>Similarly,
+$$
+\begin{aligned}
+\mathbb{R}^m
+&= \mathcal{R}(A) \oplus \mathcal{R}(A)^{\bot} \\
+&= \mathcal{R}(A) \oplus \mathcal{N}(A^T)
+\end{aligned}
+$$</p>
+</li>
+<li><p>Finally, we write them together:
+ $$
+ \mathbb{R}^n = \mathcal{R}(A^T) \oplus \mathcal{N}(A) \\
+ \mathbb{R}^m = \mathcal{R}(A) \oplus \mathcal{N}(A^T)
+ $$</p>
+</li>
+</ol>
+<p><img src="http://mathworld.wolfram.com/images/eps-gif/SubspaceDiagram_1200.gif" alt="Fundamental Theorem of Linear Algebra"></p>
+<hr>
+<p>Below are supplements to the original theorems.</p>
+<h2>Qualification for Basis</h2>
+<h3>Statement</h3>
+<blockquote><p>Any Set of n Linearly Independent Vectors Is A Basis For Vector Space V(dim V = n)</p>
+</blockquote>
+<p>The proof is separated in multiple steps.</p>
+<h3>Lemma I: Maximum Capacity of Linearly Independent Set</h3>
+<h4>Statement</h4>
+<blockquote><p>Any linearly independent set in V(dim V = n) contains no more than n vectors.</p>
+</blockquote>
+<h4>Proof<sup class="footnote-ref" id="fnref-2"><a href="#fn-2">2</a></sup></h4>
+<ol>
+<li><p>Suppose a linearly independent set in V contains more than n vectors:
+$$
+A = \{ \underline{a_1}, \cdots, \underline{a_m}\} \text{ is a basis for } Span\{ \underline{a_1}, \cdots, \underline{a_m}\} \\
+dim(Span\{ \underline{a_1}, \cdots, \underline{a_m}\}) = m \gt n
+$$</p>
+</li>
+<li><p>But the dimension of the space spanned by the set is n:
+$$
+\text{Suppose } \{ \underline{v_1}, \cdots, \underline{v_n}\} \text{ is a basis for } V, \\
+\forall \underline{a} \in Span\{ \underline{a_1}, \cdots, \underline{a_m}\} \subseteq V, \\
+(\text{ as } \underline{a_1}, \cdots, \underline{a_m} \in V, Span\{ \underline{a_1}, \cdots, \underline{a_m}\} \subseteq V)\\
+\underline{a} = \sum_{i=1}^n s_i \underline{v_i} \\
+\implies \{ \underline{v_1}, \cdots, \underline{v_n}\} \text{ is a basis for } Span\{ \underline{a_1}, \cdots, \underline{a_m}\} \\
+\implies dim(Span\{ \underline{a_1}, \cdots, \underline{a_m}\}) = n \ngtr n
+$$</p>
+</li>
+<li><p>We have a contradiction here. Thus the assumption is wrong. Any linearly independent set in V contains no more than n vectors.</p>
+</li>
+</ol>
+<hr>
+<h3>Lemma II: Is Basis?</h3>
+<h4>Statement</h4>
+<blockquote><p>Any set of n linearly independent vectors is a basis for V(dimV = n).</p>
+</blockquote>
+<h4>Proof<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup></h4>
+<ol>
+<li><p>Suppose a linearly independent set of n vectors:
+$$
+A = \{ \underline{a_1}, \cdots, \underline{a_n}\}
+$$</p>
+</li>
+<li><p>Then we can construct a linearly dependent set:
+$$
+\forall \underline{b} \in V, \\
+B = \{ \underline{a_1}, \cdots, \underline{a_n}, \underline{b}\}
+$$
+Because it is linearly dependent, we have:
+$$
+(\sum_{i=1}^{n} s_i \underline{a_i}) + t\underline{b} = \underline{0} \implies \text{Parameters s or b are not all zero.}\\
+\Downarrow \\
+t \neq 0 (\text{otherwise all parameters s and t are zero}) \implies \underline{b} = \sum_{i \in B\backslash Z} \frac{s_i}{t} \underline{a_i} \\
+\Downarrow \\
+\text{Every vector in } V \text{can be expressed as a linear combination vectors in A. A span } V.
+$$</p>
+</li>
+<li><p>Because A is linearly independent, every vector in V can be expressed as a <strong>unique</strong> linear combination of vectors in A. According to the <strong>definition of basis</strong>, A is a basis for V.</p>
+</li>
+</ol>
+<hr>
+<p>A strait forward conclusion is the following(<a href="https://math.stackexchange.com/questions/1871081/two-vector-spaces-with-same-dimension-and-same-basis-are-identical">Reference</a>):</p>
+<h3>Lemma III: Subspace = Vector Space?</h3>
+<h4>Statement</h4>
+<blockquote><p>Suppose W is a subspace of V. If dim W = dim V, then W = V.</p>
+</blockquote>
+<h4>Proof</h4>
+<p>This can be proved as the basis of W is a set of n linearly independent vectors. Since dim V = n, the basis of W form a basis of V:
+$$
+V \subseteq Span\{\underline{w_1}, \cdots, \underline{w_n}\} = W
+$$
+Because W is subspace of V, we must have W = V.</p>
+<hr>
+<h2>Invertible Matrix Theorem</h2>
+<p>First, we prove two basic conclusions(Reference: <a href="http://www.seas.ucla.edu/~vandenbe/133A/lectures/inverses.pdf">UCLA</a>, Theorem 3.3.18):</p>
+<h3>Left Invertible ⟹ Linearly Independent Columns</h3>
+<h4>Statement</h4>
+<blockquote><p>If a matrix is left invertible, then its column vectors are linearly independent.</p>
+</blockquote>
+<h4>Proof</h4>
+$$
+\forall \underline{v} \in V, A \underline{v} = \underline{0}, A^{-1}A \underline{v} = \underline{0} \implies \underline{v} = \underline{0}
+$$<p>This indicates that column vectors are linearly independent.</p>
+<hr>
+<h3>Square + Linearly Independent Columns ⟹ Right Invertible</h3>
+<h4>Statement</h4>
+<blockquote><p>If a <strong>square</strong> matrix has linearly independent column vectors, then matrix is right invertible.</p>
+</blockquote>
+<h4>Proof</h4>
+$$
+A = \begin{bmatrix} \underline{a_1} & \cdots & \underline{a_n} \end{bmatrix}
+$$<p>The vector space has dimension <strong>n</strong>(Row Size). There are <strong>n</strong> linearly independent column vectors(Column Size). Thus <strong>by 5.2</strong>, the column vectors form a basis. The standard basis vectors can be formed as:
+$$
+\underline{e_j} = \sum_{i=1}^{n} s_{ij} \underline{a_i} \\
+\sum_{i=1}^{n} s_{ij} a_{ik} = \begin{cases}
+0, & k \neq j \\
+1, & k  = j
+\end{cases}
+$$</p>
+<p>Then we can construct a matrix B by the parameters s, such that AB = I:</p>
+$$
+\begin{aligned}
+AB 
+&= \begin{bmatrix} \underline{a_1} &\cdots & \underline{a_n} \end{bmatrix} 
+\begin{bmatrix}
+s_{11} & \cdots & s_{1n} \\
+\vdots & \ddots & \vdots\\
+s_{n1} & \cdots & s_{nn} \\
+\end{bmatrix} 
+= \begin{bmatrix} \underline{e_1} &\cdots &\underline{e_n} \end{bmatrix} 
+= I
+\end{aligned}
+$$<p>Thus A is right invertible.</p>
+<hr>
+<h3>For Square Matrix, Left Invertible ⟺ Right Invertible</h3>
+<h4>Statement</h4>
+<blockquote><p>For square matrix, AB = I ⟺ BA = I.</p>
+</blockquote>
+<h4>Proof<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup></h4>
+<ol>
+<li><p>If A is square matrix and AB = I, then B is a square matrix and is left invertible. By 6.1, B has linearly independent columns:
+$$
+AB = I \overset{6.1}{\implies} B \text{ has linearly independent columns} \overset{6.2}{\implies} BC = I
+$$</p>
+<p>We can also show that B has linearly independent rows:</p>
+<p>$$
+BC = I \Longleftrightarrow C^T B^T = I \overset{6.1}{\implies} B^T \text{ has linearly independent columns}
+$$</p>
+</li>
+<li><p>If AB = I, we have:
+ $$
+ B = BI = B(AB) = (BA)B \\
+ B - (BA)B = 0 \\
+ (I - BA)B = 0 \\
+ B^T (I - BA)^T = 0
+ $$</p>
+<p>According to linearly independence of row vectors of B, we must have:</p>
+<p>$$
+ (I - BA)^T = 0 \Longleftrightarrow (I - BA) = 0 \Longleftrightarrow BA = I
+ $$</p>
+</li>
+</ol>
+<hr>
+<h3>Invertible ⟺ Square + Column Vectors Linearly Independent</h3>
+<h4>Statement</h4>
+<blockquote><p>A matrix is invertible if it is square, and its columns vectors are linearly independent.</p>
+</blockquote>
+<h4>Proof</h4>
+<p>Now we may begin the proof:</p>
+<ol>
+<li><p>If matrix is invertible, then it is left invertible, thus its column vectors are linearly independent. "AB = BA = I" means that it must be square.</p>
+</li>
+<li><p>If a square matrix A has linearly independent column vectors, then it is right invertible:
+$$
+AB = I
+$$
+Then by 6.3, for square matrix we also have:
+$$
+BA = I
+$$
+Thus matrix A is invertible. In addition, A has linearly independent rows:
+$$
+B^T A^T = (AB)^T = I^T = I  \\
+A^T \text{ is left invertible} 
+\overset{(a)}{=} A^T \text{ has linearly independent columns}
+$$</p>
+</li>
+</ol>
+<hr>
+<h3>Invertible Matrix Theorem</h3>
+<h4>Statement</h4>
+<p>It describes a type of matrix that posses the following characteristics all at once:</p>
+<blockquote><p>Invertible = Square = Linearly Independent Columns(Is Also Basis for R^n) &amp; Rows = Full Rank = Non-Singular = Hermitian Invertible</p>
+</blockquote>
+<h4>Proof</h4>
+<p>The key is theorem 6.3 "Invertible ⟺ Square + Column Vectors Linearly Independent".</p>
+<p>(Non-singular because R^n = Range(dim = n) + Null-Space(dim = 0), as these two form a direct sum. So nullity = 0 means that null space is {0})</p>
+<h3>Positive-definite ⟹ Invertible</h3>
+<h4>Statement</h4>
+<blockquote><p>If a matrix is positive-definite, then it is invertible.</p>
+</blockquote>
+<h4>Proof: Definition 4.2.2</h4>
+<ol>
+<li><p>If A is Positive-definite, then we have:
+$$
+\forall \underline{v} \notin F^n - \{\underline{0}\}, \\
+\underline{v}^H A \underline{v} \gt 0 \implies A\underline{v} \neq 0
+$$
+Thus A has linearly independent columns:
+$$
+A \underline{v} = 0 \implies \underline{v} = 0
+$$</p>
+</li>
+<li><p>Since positive-definite is defined on square matrix, 6.4 can be applies: A is square matrix with linearly independent column vectors, thus A is invertible.</p>
+</li>
+</ol>
+<h3>Linearly Independent Columns ⟺ Grammian Positive-definite</h3>
+<h4>Statement</h4>
+<blockquote><p>A has linearly independent columns if and only if $A^H A$ is positive-definite. ($A^H A$: Grammian Matrix G)</p>
+</blockquote>
+<h4>Proof</h4>
+<ol>
+<li><p>A Has Linearly Independent Columns ⟹ $A^H A$ Positive-definite: <a href="https://home.cc.umanitoba.ca/~platt/M2300/L24-posdefinite-p6.pdf">Positive Definiteness</a>, <a href="https://www.khanacademy.org/math/linear-algebra/matrix-transformations/matrix-transpose/v/lin-alg-showing-that-a-transpose-x-a-is-invertible">Khan</a>, 6.7</p>
+<p>$$
+   \forall \underline{v} \in F^n - \{\underline{0}\}, \\
+   A\underline{v} \neq 0 \\
+   (A\underline{v})^H (A\underline{v}) = \underline{v}^H(A^H A)\underline{v} \gt 0 \\
+   (\text{by standard inner-product})
+ $$</p>
+<p>Thus $A^H A$ is positive definite, and by 6.7 it is also invertible.</p>
+</li>
+<li><p>$A^H A$ Positive-definite ⟹ A Has Linearly Independent Columns: Theorem 4.2.3
+$$
+\forall \underline{v} \in F^n - \{\underline{0}\}, \\
+\underline{v}^H (A^H A) \underline{v} \gt 0 \\
+(A\underline{v})^H (A\underline{v}) \gt 0 \\
+A\underline{v} \neq \underline{0}
+$$
+Thus A has linearly independent columns.</p>
+</li>
+</ol>
+<hr>
+<h2>Best Approximation</h2>
+<h3>Best Approximation Theorem</h3>
+<p>Best Approximation ⟺ Error ⟂ Entire Target Space</p>
+<h3>Normal Equation for Best Approximation</h3>
+<ol>
+<li><p>If b is not in R(A), Ax = b cannot be solved. (Because R(A) is defined as every vector Ax can reach.)</p>
+</li>
+<li><p>Then we are interested in finding a "p = Ax", where p is as close as possible to b. Or we can say we want to find the best approximation of b by vectors in R(A) (or column space of A).
+$$
+\underline{p} = A \underline{x}, \\
+||\underline{b} - \underline{p}|| \le ||\underline{b} - \underline{w}||, \forall \underline{w} \in \mathcal{R}(A)
+$$</p>
+</li>
+<li><p>By the theorem of best approximation, we have:
+$$
+\langle \underline{b} - \underline{p} | \underline{v} \rangle = \underline{0}, \forall \underline{v} \in \mathcal{R}(A)
+$$
+This means the error "b - p" is also perpendicular to all column vectors of A:
+$$
+A^T \cdot (\underline{b} - \underline{p}) = \begin{bmatrix} \underline{0} \\ \vdots \\ \underline{0} \end{bmatrix} = \underline{0} \\
+A^T(\underline{b} - A\underline{x}) = \underline{0} \\
+A^T \underline{b} = (A^T  A) \underline{x}  \\
+(\text{This is the Normal Equation}, \underline{t} = G \underline{s})
+$$</p>
+</li>
+</ol>
+<hr>
+<h2>Reference</h2>
+<ul>
+<li><a href="http://www.math.toronto.edu/nhoell/MAT245/FTLA.pdf">http://www.math.toronto.edu/nhoell/MAT245/FTLA.pdf</a></li>
+<li><a href="http://mitran-lab.amath.unc.edu/courses/MATH547/lessons/Lesson09.pdf">http://mitran-lab.amath.unc.edu/courses/MATH547/lessons/Lesson09.pdf</a></li>
+</ul>
+<div class="footnotes">
+<hr>
+<ol><li id="fn-1"><p><a href="https://www.math.ucdavis.edu/~linear/old/notes24.pdf">Reference - UCDavis</a><a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+<li id="fn-2"><p><a href="https://math.stackexchange.com/questions/1387170/any-set-with-more-elements-than-the-dimension-of-vector-space-is-linearly-depend">Reference - StackExchange</a><a href="#fnref-2" class="footnote">&#8617;</a></p></li>
+<li id="fn-3"><p><a href="http://www.seas.ucla.edu/~vandenbe/133A/lectures/inverses.pdf">Reference - UPenn</a><a href="#fnref-3" class="footnote">&#8617;</a></p></li>
+<li id="fn-4"><p><a href="https://math.stackexchange.com/questions/3852/if-ab-i-then-ba-i#answer-3881">Reference - StackExchange</a><a href="#fnref-4" class="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+    </div>
+    <div id="postamble">
+        <p>
+            <span class="author">by Jon</span>
+            <br>
+            <!-- <span class="date">Nov 21, 2017</span> -->
+        <p>
+    </div>
+    <style type="text/css" scoped>
+      @media print {
+        #disqus_thread {
+          display: none;
+        }
+      }
+    </style>
+    <div id="disqus_thread"></div>
+    <script>
+    
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jonioni-github-io.disqus.com/embed.js';
+    // s.src = 'https://http-localhost-8000-2iyzu8lfbt.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/sml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/tex.min.js"></script>
+    <script>document.querySelector(".org-src-container") && document.querySelectorAll("pre.src").forEach(node => { node.classList.add(node.className.match(/src-(.*)/m)[1]); hljs.highlightBlock(node) }) || hljs.initHighlightingOnLoad()</script>
+    <script>hljs.initHighlightingOnLoad()</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH"
+        crossorigin="anonymous"></script>
+    <script>
+        renderMathInElement(
+            document.body,
+            {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            }
+        )
+    </script></body>
+
+</html>

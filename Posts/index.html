@@ -74,23 +74,29 @@
         }
         q, blockquote {
             quotes: "❝" "❞" "❛" "❜";
+            margin: 0;
+            overflow: hidden;
+        }
+        blockquote:before,
+        blockquote:after {
+            color: lightgray;
+            font-size: 3rem;
         }
         blockquote:before {
             content: open-quote;
             float: left;
-            color: lightgray;
-            font-size: 3rem;
+        }
+        blockquote:after {
+            content: close-quote;
+            float: right;
         }
         blockquote p {
             margin-left: 3rem;
+            font-family: fantasy;
             font-style: italic;
-        }
-        blockquote:after {
-            content: no-close-quote;
         }
         h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
@@ -124,6 +130,7 @@
             <a href="/Posts/Fundamental Inequalities.html" title="Sep 23, 2018" > Fundamental Inequalities </a>
             <a href="/Posts/Ideal Source Coding.html" title="Sep 25, 2018" > Ideal Source Coding </a>
             <a href="/Posts/Information Capacity.html" title="Oct 17, 2018" > Information Capacity </a>
+            <a href="/Posts/Linear Algebra Proofs.html" title="Nov 21, 2017" > Linear Algebra Proofs </a>
             <a href="/Posts/Markov Chain.html" title="Sep 23, 2018" > Markov Chain </a>
             <a href="/Posts/Markov's Inequality.html" title="Dec 03, 2018" > Markov's Inequality </a>
             <a href="/Posts/Probability Basics.html" title="Sep 23, 2018" > Probability Basics </a>

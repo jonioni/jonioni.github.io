@@ -53,23 +53,29 @@
         }
         q, blockquote {
             quotes: "❝" "❞" "❛" "❜";
+            margin: 0;
+            overflow: hidden;
+        }
+        blockquote:before,
+        blockquote:after {
+            color: lightgray;
+            font-size: 3rem;
         }
         blockquote:before {
             content: open-quote;
             float: left;
-            color: lightgray;
-            font-size: 3rem;
+        }
+        blockquote:after {
+            content: close-quote;
+            float: right;
         }
         blockquote p {
             margin-left: 3rem;
+            font-family: fantasy;
             font-style: italic;
-        }
-        blockquote:after {
-            content: no-close-quote;
         }
         h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
@@ -234,8 +240,14 @@ $$</p>
     &quot;&quot;&quot;
     def __init__(self, sizes):
         &quot;&quot;&quot;[numpy.matrix] -&gt; NerualNetwork&quot;&quot;&quot;
-        self.W = [numpy.matrix(numpy.random.randn(k_out, k_in)) for k_in, k_out in zip(sizes[:-1], sizes[1:])]
-        self.b = [numpy.random.randn(k) for k in sizes[1:]]
+        self.W = [
+            numpy.matrix(numpy.random.randn(k_out, k_in)) 
+            for k_in, k_out in zip(sizes[:-1], sizes[1:])
+        ]
+        self.b = [
+            numpy.random.randn(k) 
+            for k in sizes[1:]
+        ]
         self.layers = len(sizes)
         self.dfdΣ = deque(maxlen=self.layers-1)  # self.Σ
         self.o = deque(maxlen=self.layers)

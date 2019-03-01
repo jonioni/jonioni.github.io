@@ -74,23 +74,29 @@
         }
         q, blockquote {
             quotes: "❝" "❞" "❛" "❜";
+            margin: 0;
+            overflow: hidden;
+        }
+        blockquote:before,
+        blockquote:after {
+            color: lightgray;
+            font-size: 3rem;
         }
         blockquote:before {
             content: open-quote;
             float: left;
-            color: lightgray;
-            font-size: 3rem;
+        }
+        blockquote:after {
+            content: close-quote;
+            float: right;
         }
         blockquote p {
             margin-left: 3rem;
+            font-family: fantasy;
             font-style: italic;
-        }
-        blockquote:after {
-            content: no-close-quote;
         }
         h1:before, h2:before, h3:before, h4:before, h5:before, h6:before {
             color: lightgray;
-            /* font-style: italic; */
             font-size: smaller;
         }
         /* h1:before { content: '# '; } */
@@ -110,6 +116,7 @@
         </div>
 
         <div id="posts">
+            <a href="/About.html" title="Oct 03, 2018" > About </a>
         </div>
     </div>
 </body>
